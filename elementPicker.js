@@ -1,22 +1,23 @@
-$("body").wrap("<div class='grey_out'></div>");
-
-screenDimmed = false;
+var grey_out = "<div class='grey_out'></div>"
+var screenDimmed = false;
 
 var oldColor;
 var oldElem = null;
 var currentElem = null;
 
-chrome.runtime.onMessage.addListener(
-	function (message, sender, sendResponse) {
-		if (message == "runElementPicker") {
-			runElementPicker();
-			sendResponse({running: true});
-		} else if (message == "stopElementPicker") {
-			stopElementPicker();
-			sendResponse({running: false});
+$( document ).ready(function () {
+	chrome.runtime.onMessage.addListener(
+		function (message, sender, sendResponse) {
+			if (message == "runElementPicker") {
+				runElementPicker();
+				sendResponse({running: true});
+			} else if (message == "stopElementPicker") {
+				stopElementPicker();
+				sendResponse({running: false});
+			}
 		}
-	}
-);
+	);
+});
 
 function runElementPicker() {
 	dimScreen();
@@ -46,14 +47,12 @@ function highlightElement(event) {
 }
 
 function dimScreen() {
-	$(".grey_out").css("display", "block");
-
+	$("body").wrap(grey_out);
 	screenDimmed = true;
 }
 
 function undimScreen() {
-	$(".grey_out").css("display", "none");
-	
+	$("body").unwrap();
 	screenDimmed = false;
 }
 
