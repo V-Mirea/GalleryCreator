@@ -1,23 +1,22 @@
-var grey_out = "<div class='grey_out'></div>"
-var screenDimmed = false;
+var grey_out = document.createElement("div");
+grey_out.id = "grey_out";
 
+var screenDimmed = false;
 var oldColor;
 var oldElem = null;
 var currentElem = null;
 
-$( document ).ready(function () {
-	chrome.runtime.onMessage.addListener(
-		function (message, sender, sendResponse) {
-			if (message == "runElementPicker") {
-				runElementPicker();
-				sendResponse({running: true});
-			} else if (message == "stopElementPicker") {
-				stopElementPicker();
-				sendResponse({running: false});
-			}
+chrome.runtime.onMessage.addListener(
+	function (message, sender, sendResponse) {
+		if (message == "runElementPicker") {
+			runElementPicker();
+			sendResponse({running: true});
+		} else if (message == "stopElementPicker") {
+			stopElementPicker();
+			sendResponse({running: false});
 		}
-	);
-});
+	}
+);
 
 function runElementPicker() {
 	dimScreen();
@@ -47,12 +46,21 @@ function highlightElement(event) {
 }
 
 function dimScreen() {
-	$("body").wrap(grey_out);
+	while (document.body.firstChild) {
+		grey_out.appendChild(document.body.firstChild);
+	}
+	document.body.appendChild(grey_out);
+
 	screenDimmed = true;
 }
 
 function undimScreen() {
-	$("body").unwrap();
+	var dim = document.getElementById("grey_out");
+	while (dim.firstChild) {
+		document.body.appendChild(dim.firstChild);
+	}
+	document.body.removeChild(dim);
+
 	screenDimmed = false;
 }
 
