@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .gallery {
+                background-color: black;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                z-index:-999;
+            }
+            .gallery div {        
+                background-repeat: no-repeat;
+                background-size: contain;
+                background-position: center center;
+
+                height: 100%;
+                width: 100%;
+                position: absolute;
+                z-index: -999;
+            }    
+        </style>
+    </head>
+    <body>
+        <div class="gallery"><div class="display"></div></div>
+        <script src="jquery-3.3.1.min.js"></script>
+        <script src="gallery.js"></script>
+    </body>
+</html>
