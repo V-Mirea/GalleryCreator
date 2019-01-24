@@ -7,6 +7,8 @@ var oldColor;
 var oldElem = null;
 var currentElem = null;
 
+var endings = [".jpg", ".png"]
+
 chrome.runtime.onMessage.addListener(
 	function (message, sender, sendResponse) {
 		if (message == "toggleElementPicker") {
@@ -24,7 +26,24 @@ chrome.runtime.onMessage.addListener(
 document.body.onclick = function(event) {
 	if (elementPickerRunning) {
 		var images = $(event.target).find('img').map(function(){
-			return $(this).attr('src')
+			if ($(this).parent().is("a")){
+				var isImage = false;
+
+				var link = $(this).parent().attr('href');
+				for (var i = 0; i < endings.length; i++) {
+					if (link.endsWith(endings[i])) {
+						isImage = true;
+						break;
+					}
+				}
+				if (isImage) {
+					return link
+				} else {
+					return $(this).attr('src')
+				}	
+			} else {
+				return $(this).attr('src')
+			}
 		}).get()
 
 		
