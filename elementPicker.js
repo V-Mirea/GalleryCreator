@@ -11,11 +11,9 @@ chrome.runtime.onMessage.addListener(
 	function (message, sender, sendResponse) {
 		if (message == "toggleElementPicker") {
 			if (elementPickerRunning) {
-				stopElementPicker();
-				elementPickerRunning = false;
+				stopElementPicker();			
 			} else {
-				runElementPicker();
-				elementPickerRunning = true;
+				runElementPicker();		
 			}
 		} else if (message == "injected?") {
 			sendResponse({injected: true});
@@ -23,9 +21,26 @@ chrome.runtime.onMessage.addListener(
 	}
 );
 
+document.body.onclick = function(event) {
+	if (elementPickerRunning) {
+		var images = $(event.target).find('img').map(function(){
+			return $(this).attr('src')
+		}).get()
+
+		
+		message = {action: "openPage", page: chrome.extension.getURL("gallery.html"), images: images}
+
+		chrome.runtime.sendMessage(message, function(response) {
+			stopElementPicker();
+		});
+	}
+}
+
 function runElementPicker() {
 	dimScreen();
 	document.addEventListener("mousemove", highlightElement);
+
+	elementPickerRunning = true;
 }
 
 function stopElementPicker() {
@@ -35,6 +50,8 @@ function stopElementPicker() {
 
 	undimScreen();
 	document.removeEventListener("mousemove", highlightElement);
+
+	elementPickerRunning = false;
 }
 
 function highlightElement(event) {
@@ -71,12 +88,4 @@ function undimScreen() {
 	document.body.removeChild(dim);
 
 	screenDimmed = false;
-}
-
-function toggleScreenDimness() {
-	if (screenDimmed) {
-		undimScreen();
-	} else {
-		dimScreen();
-	}
 }
