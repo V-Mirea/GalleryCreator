@@ -1,6 +1,7 @@
 var grey_out = document.createElement("div");
 grey_out.id = "grey_out";
 
+var elementPickerRunning = false;
 var screenDimmed = false;
 var oldColor;
 var oldElem = null;
@@ -8,12 +9,16 @@ var currentElem = null;
 
 chrome.runtime.onMessage.addListener(
 	function (message, sender, sendResponse) {
-		if (message == "runElementPicker") {
-			runElementPicker();
-			sendResponse({running: true});
-		} else if (message == "stopElementPicker") {
-			stopElementPicker();
-			sendResponse({running: false});
+		if (message == "toggleElementPicker") {
+			if (elementPickerRunning) {
+				stopElementPicker();
+				elementPickerRunning = false;
+			} else {
+				runElementPicker();
+				elementPickerRunning = true;
+			}
+		} else if (message == "injected?") {
+			sendResponse({injected: true});
 		}
 	}
 );
@@ -24,6 +29,10 @@ function runElementPicker() {
 }
 
 function stopElementPicker() {
+	if (oldElem) {
+		oldElem.style.backgroundColor = oldColor;
+	}
+
 	undimScreen();
 	document.removeEventListener("mousemove", highlightElement);
 }
