@@ -17,7 +17,7 @@ chrome.runtime.onMessage.addListener(
 			} else {
 				runElementPicker();		
 			}
-		} else if (message == "injected?") {
+		} else if (message == "isInjected") {
 			sendResponse({injected: true});
 		}
 	}
@@ -36,6 +36,7 @@ document.body.onclick = function(event) {
 						break;
 					}
 				}
+
 				if (isImage) {
 					return link
 				} else {

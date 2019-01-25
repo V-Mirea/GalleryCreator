@@ -4,7 +4,7 @@ var button = document.getElementById("pickElement");
 
 button.onclick = function() {
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-		chrome.tabs.sendMessage(tabs[0].id, "injected?", function(response) {
+		chrome.tabs.sendMessage(tabs[0].id, "isInjected", function(response) {
 			response = response || {};
 			if (!response.injected) {
 				chrome.tabs.insertCSS(null, {file: 'greyOut.css'}, function() {
