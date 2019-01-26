@@ -54,34 +54,38 @@ async function getMeta(url) {
 
 function grabImages(target) {
 	var images = target.find('img').map(function(){
-		if ($(this).parent().is("a")){
-			var isImage = false;
-
-			var link = $(this).parent().attr('href');
-			for (let i = 0; i < endings.length; i++) {
-				if (link.endsWith(endings[i])) {
-					isImage = true;
-					break;
-				}
-			}
-
-			if (isImage) {
-				return link;
-			} else {
-				return $(this).attr('src');
-			}	
-		} else {
-			return $(this).attr('src');
-		}
+		return findImage($(this));
 	}).get();
 
 	return images;
 }
 
+function findImage(target) {
+	if (target.parent().is("a")){
+		var isImage = false;
+
+		var link = target.parent().attr('href');
+		for (let i = 0; i < endings.length; i++) {
+			if (link.endsWith(endings[i])) {
+				isImage = true;
+				break;
+			}
+		}
+
+		if (isImage) {
+			return link;
+		} else {
+			return target.attr('src');
+		}	
+	} else {
+		return target.attr('src');
+	}
+}
+
 function runElementPicker() {
 	dimScreen();
 	document.addEventListener("mousemove", highlightElement);
-
+	chrome.runtime.sendMessage("addContextMenu");
 	elementPickerRunning = true;
 }
 

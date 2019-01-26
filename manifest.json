@@ -20,6 +20,7 @@
 	
 	"permissions": [
 		"activeTab",
-		"<all_urls>"
+		"<all_urls>",
+		"contextMenus"
 	]
 }
