@@ -1,7 +1,5 @@
 var images = null;
 
-function saveImage(){}
-
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.action == "openPage") {
@@ -15,12 +13,18 @@ chrome.runtime.onMessage.addListener(
                 title: "Save image",
                 contexts:["image"]
             });
+        } else if (request == "removeContextMenu") {
+            chrome.contextMenus.remove('saveImage');
         }
     }
 );
 
 chrome.contextMenus.onClicked.addListener(function(info, tab) {
     if (info.menuItemId == "saveImage") {
-        saveImage();
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, "saveImage", function(response) {
+                // check if saved
+            });
+        });
     }
 });

@@ -7,6 +7,8 @@ var oldColor;
 var oldElem = null;
 var currentElem = null;
 
+var contextMenuElement = null;
+
 var endings = [".jpg", ".png"];
 
 chrome.runtime.onMessage.addListener(
@@ -19,6 +21,10 @@ chrome.runtime.onMessage.addListener(
 			}
 		} else if (message == "isInjected") {
 			sendResponse({injected: true});
+		} else if (message == "saveImage") {
+			saveImage();
+
+			//sendResponse(contextMenuElement);
 		}
 	}
 );
@@ -42,6 +48,12 @@ document.body.onclick = async function(event) {
 		});
 	}
 }
+
+document.addEventListener("mousedown", function(event){
+    if(event.button == 2) { //right click
+        contextMenuElement = $(event.target);
+    }
+}, true);
 
 async function getMeta(url) {
     return new Promise((resolve, reject) => {
@@ -82,6 +94,22 @@ function findImage(target) {
 	}
 }
 
+function saveImage() {
+	var imageUrl = findImage(contextMenuElement);
+
+	chrome.storage.sync.get('savedImages', function(result) {
+		images = result.savedImages || [];
+
+		if(!images.includes(imageUrl)) {
+			images.push(imageUrl);
+		}
+
+		chrome.storage.sync.set({'savedImages': images}, function() {
+			alert(images);
+		});
+	});
+}
+
 function runElementPicker() {
 	dimScreen();
 	document.addEventListener("mousemove", highlightElement);
@@ -96,6 +124,7 @@ function stopElementPicker() {
 
 	undimScreen();
 	document.removeEventListener("mousemove", highlightElement);
+	chrome.runtime.sendMessage("removeContextMenu");
 
 	elementPickerRunning = false;
 }
