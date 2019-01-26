@@ -7,7 +7,7 @@ var oldColor;
 var oldElem = null;
 var currentElem = null;
 
-var endings = [".jpg", ".png"]
+var endings = [".jpg", ".png"];
 
 chrome.runtime.onMessage.addListener(
 	function (message, sender, sendResponse) {
@@ -23,37 +23,59 @@ chrome.runtime.onMessage.addListener(
 	}
 );
 
-document.body.onclick = function(event) {
+document.body.onclick = async function(event) {
 	if (elementPickerRunning) {
-		var images = $(event.target).find('img').map(function(){
-			if ($(this).parent().is("a")){
-				var isImage = false;
+		var images = grabImages($(event.target));
 
-				var link = $(this).parent().attr('href');
-				for (var i = 0; i < endings.length; i++) {
-					if (link.endsWith(endings[i])) {
-						isImage = true;
-						break;
-					}
-				}
-
-				if (isImage) {
-					return link
-				} else {
-					return $(this).attr('src')
-				}	
-			} else {
-				return $(this).attr('src')
+		// Remove any images less than 150x150
+		for (var i = images.length - 1; i >= 0; i--) {
+			var meta = await getMeta(images[i]);
+			if (meta.width <= 150 || meta.height <= 150) { 
+				images.splice(i, 1);
 			}
-		}).get()
+		}
 
-		
-		message = {action: "openPage", page: chrome.extension.getURL("gallery.html"), images: images}
+		message = {action: "openPage", page: chrome.extension.getURL("gallery.html"), images: images};
 
 		chrome.runtime.sendMessage(message, function(response) {
 			stopElementPicker();
 		});
 	}
+}
+
+async function getMeta(url) {
+    return new Promise((resolve, reject) => {
+        let img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = url;
+    });
+}
+
+function grabImages(target) {
+	var images = target.find('img').map(function(){
+		if ($(this).parent().is("a")){
+			var isImage = false;
+
+			var link = $(this).parent().attr('href');
+			for (let i = 0; i < endings.length; i++) {
+				if (link.endsWith(endings[i])) {
+					isImage = true;
+					break;
+				}
+			}
+
+			if (isImage) {
+				return link;
+			} else {
+				return $(this).attr('src');
+			}	
+		} else {
+			return $(this).attr('src');
+		}
+	}).get();
+
+	return images;
 }
 
 function runElementPicker() {
