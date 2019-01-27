@@ -11,7 +11,7 @@ $(document).ready(function() {
 
 function replaceImgElement(url) {
     $(".display").remove();
-    galleryElement = "<div class=\"display\" style=\"background-image: url(" + url + ");\"></div>"
+    galleryElement = "<img class=\"display\" src=\"" + url + "\"></img>"
     $(".gallery").append(galleryElement);
 }
 
