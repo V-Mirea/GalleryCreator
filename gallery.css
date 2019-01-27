@@ -7,13 +7,11 @@
     height: 100%;
     z-index:-999;
 }
-.gallery div {        
+.display {        
     background-repeat: no-repeat;
-    background-size: contain;
     background-position: center center;
-
     height: 100%;
     width: 100%;
-    position: absolute;
+    position: fixed;
     z-index: -999;
 }    
