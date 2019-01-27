@@ -89,8 +89,20 @@ function findImage(target) {
 		} else {
 			return target.attr('src');
 		}	
-	} else {
+	} else if (target.is("img")) {
 		return target.attr('src');
+	} else {
+		var img = target.find("img");
+		
+		if(img.length > 0) {
+			img = img.first();
+		} else {
+			img = target.siblings().find("img");
+			if(img.length > 0) {
+				img = img.first();
+			}
+		}
+		return img.attr('src');
 	}
 }
 
@@ -105,7 +117,7 @@ function saveImage() {
 		}
 
 		chrome.storage.sync.set({'savedImages': images}, function() {
-			alert(images);
+			alert("Image saved: " + imageUrl);
 		});
 	});
 }
@@ -113,7 +125,7 @@ function saveImage() {
 function runElementPicker() {
 	dimScreen();
 	document.addEventListener("mousemove", highlightElement);
-	chrome.runtime.sendMessage("addContextMenu");
+	//chrome.runtime.sendMessage("addContextMenu");
 	elementPickerRunning = true;
 }
 
@@ -124,7 +136,7 @@ function stopElementPicker() {
 
 	undimScreen();
 	document.removeEventListener("mousemove", highlightElement);
-	chrome.runtime.sendMessage("removeContextMenu");
+	//chrome.runtime.sendMessage("removeContextMenu");
 
 	elementPickerRunning = false;
 }
