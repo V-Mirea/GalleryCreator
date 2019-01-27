@@ -1,4 +1,5 @@
 var images = null;
+var contextMenus = [];
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
@@ -8,14 +9,10 @@ chrome.runtime.onMessage.addListener(
         } else if (request == "getImages") {
             sendResponse({images: images});
         } else if (request == "addContextMenu") {
-            chrome.contextMenus.create({
-                id: "saveImage",
-                title: "Save image",
-                contexts:["image"]
-            });
+            addSaveCM();
         } else if (request == "removeContextMenu") {
-            chrome.contextMenus.remove('saveImage');
-        }
+            removeSaveCM();
+        } 
     }
 );
 
@@ -28,3 +25,28 @@ chrome.contextMenus.onClicked.addListener(function(info, tab) {
         });
     }
 });
+
+chrome.tabs.onActivated.addListener(function(activeInfo) {
+    console.log(activeInfo.tabId);
+
+    chrome.tabs.sendMessage(activeInfo.tabId, "isInjected", function(response) {
+        response = response || {};
+        if (!response.injected) {
+            removeSaveCM();
+        } else {
+            addSaveCM();
+        }
+    }); 
+});
+
+function addSaveCM() {
+    chrome.contextMenus.create({
+        id: "saveImage",
+        title: "Save image",
+        contexts:["all"]
+    });
+}
+
+function removeSaveCM() {
+    chrome.contextMenus.remove('saveImage');
+}
