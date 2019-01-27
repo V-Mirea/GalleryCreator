@@ -1,8 +1,9 @@
 var elementPickerRunning;
 
-var button = document.getElementById("pickElement");
+var galleryButton = document.getElementById("pickElement");
+var savedButton = document.getElementById("viewGallery");
 
-button.onclick = function() {
+galleryButton.onclick = function() {
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 		chrome.tabs.sendMessage(tabs[0].id, "isInjected", function(response) {
 			response = response || {};
@@ -16,6 +17,15 @@ button.onclick = function() {
 				toggleElementPicker();
 			}
 		});
+	});
+}
+
+savedButton.onclick = function() {
+	chrome.storage.sync.get('savedImages', function(result) {
+		images = result.savedImages || [];
+		message = {action: "openPage", page: chrome.extension.getURL("gallery.html"), images: images};
+
+		chrome.runtime.sendMessage(message);
 	});
 }
 
