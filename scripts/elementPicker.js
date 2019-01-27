@@ -125,7 +125,7 @@ function saveImage() {
 function runElementPicker() {
 	dimScreen();
 	document.addEventListener("mousemove", highlightElement);
-	//chrome.runtime.sendMessage("addContextMenu");
+
 	mElementPickerRunning = true;
 }
 
@@ -133,10 +133,8 @@ function stopElementPicker() {
 	if (mOldElem) {
 		mOldElem.style.backgroundColor = mOldBgColor;
 	}
-
 	undimScreen();
 	document.removeEventListener("mousemove", highlightElement);
-	//chrome.runtime.sendMessage("removeContextMenu");
 
 	mElementPickerRunning = false;
 }
