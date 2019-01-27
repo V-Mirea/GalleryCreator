@@ -44,9 +44,13 @@ function addSaveCM() {
         id: "saveImage",
         title: "Save image",
         contexts:["all"]
+    }, function() {
+        console.log(chrome.runtime.lastError); // TODO: Make sure this can be ignored
     });
 }
 
 function removeSaveCM() {
-    chrome.contextMenus.remove('saveImage');
+    chrome.contextMenus.remove('saveImage', function() {
+        console.log(chrome.runtime.lastError); // TODO: Make sure this can be ignored
+    });
 }
