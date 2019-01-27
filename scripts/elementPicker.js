@@ -1,20 +1,20 @@
-var grey_out = document.createElement("div");
-grey_out.id = "grey_out";
+var mGreyOut = document.createElement("div");
+mGreyOut.id = "grey_out";
 
-var elementPickerRunning = false;
-var screenDimmed = false;
-var oldColor;
-var oldElem = null;
-var currentElem = null;
+var mElementPickerRunning = false;
+var mScreenDimmed = false;
+var mOldBgColor = null;
+var mOldElem = null;
+var mCurrentElem = null;
+var mContextMenuElement = null;
 
-var contextMenuElement = null;
-
-var endings = [".jpg", ".png"];
+const IMAGE_ENDINGS = [".jpg", ".png"];
+const GALLERY_PAGE = "gallery/gallery.html";
 
 chrome.runtime.onMessage.addListener(
 	function (message, sender, sendResponse) {
 		if (message == "toggleElementPicker") {
-			if (elementPickerRunning) {
+			if (mElementPickerRunning) {
 				stopElementPicker();			
 			} else {
 				runElementPicker();		
@@ -30,7 +30,7 @@ chrome.runtime.onMessage.addListener(
 );
 
 document.body.onclick = async function(event) {
-	if (elementPickerRunning) {
+	if (mElementPickerRunning) {
 		var images = grabImages($(event.target));
 
 		// Remove any images less than 150x150
@@ -41,7 +41,7 @@ document.body.onclick = async function(event) {
 			}
 		}
 
-		message = {action: "openPage", page: chrome.extension.getURL("gallery.html"), images: images};
+		message = {action: "openPage", page: chrome.extension.getURL(GALLERY_PAGE), images: images};
 
 		chrome.runtime.sendMessage(message, function(response) {
 			stopElementPicker();
@@ -51,7 +51,7 @@ document.body.onclick = async function(event) {
 
 document.addEventListener("mousedown", function(event){
     if(event.button == 2) { //right click
-        contextMenuElement = $(event.target);
+        mContextMenuElement = $(event.target);
     }
 }, true);
 
@@ -77,8 +77,8 @@ function findImage(target) {
 		var isImage = false;
 
 		var link = target.parent().attr('href');
-		for (let i = 0; i < endings.length; i++) {
-			if (link.endsWith(endings[i])) {
+		for (let i = 0; i < IMAGE_ENDINGS.length; i++) {
+			if (link.endsWith(IMAGE_ENDINGS[i])) {
 				isImage = true;
 				break;
 			}
@@ -107,7 +107,7 @@ function findImage(target) {
 }
 
 function saveImage() {
-	var imageUrl = findImage(contextMenuElement);
+	var imageUrl = findImage(mContextMenuElement);
 
 	chrome.storage.sync.get('savedImages', function(result) {
 		images = result.savedImages || [];
@@ -126,45 +126,45 @@ function runElementPicker() {
 	dimScreen();
 	document.addEventListener("mousemove", highlightElement);
 	//chrome.runtime.sendMessage("addContextMenu");
-	elementPickerRunning = true;
+	mElementPickerRunning = true;
 }
 
 function stopElementPicker() {
-	if (oldElem) {
-		oldElem.style.backgroundColor = oldColor;
+	if (mOldElem) {
+		mOldElem.style.backgroundColor = mOldBgColor;
 	}
 
 	undimScreen();
 	document.removeEventListener("mousemove", highlightElement);
 	//chrome.runtime.sendMessage("removeContextMenu");
 
-	elementPickerRunning = false;
+	mElementPickerRunning = false;
 }
 
 function highlightElement(event) {
 	var x = event.clientX;
 	var y = event.clientY;
 	
-	currentElem = document.elementFromPoint(x, y);
-	if (currentElem != oldElem) {
-		if (oldElem) {
-			oldElem.style.backgroundColor = oldColor;
+	mCurrentElem = document.elementFromPoint(x, y);
+	if (mCurrentElem != mOldElem) {
+		if (mOldElem) {
+			mOldElem.style.backgroundColor = mOldBgColor;
 		}
 		
-		oldColor = currentElem.style.backgroundColor;
-		oldElem = currentElem;
+		mOldBgColor = mCurrentElem.style.backgroundColor;
+		mOldElem = mCurrentElem;
 		
-		currentElem.style.backgroundColor = "#FDFF47";
+		mCurrentElem.style.backgroundColor = "#FDFF47";
 	}
 }
 
 function dimScreen() {
 	while (document.body.firstChild) {
-		grey_out.appendChild(document.body.firstChild);
+		mGreyOut.appendChild(document.body.firstChild);
 	}
-	document.body.appendChild(grey_out);
+	document.body.appendChild(mGreyOut);
 
-	screenDimmed = true;
+	mScreenDimmed = true;
 }
 
 function undimScreen() {
@@ -174,5 +174,5 @@ function undimScreen() {
 	}
 	document.body.removeChild(dim);
 
-	screenDimmed = false;
+	mScreenDimmed = false;
 }
