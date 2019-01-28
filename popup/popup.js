@@ -22,7 +22,7 @@ mSaveButton.onclick = function() {
 		chrome.tabs.sendMessage(tabs[0].id, "isInjected", function(response) {
 			response = response || {};
 			if (!response.injected) {
-				injectScripts( function() {
+				injectScripts(function() {
 					chrome.runtime.sendMessage("addContextMenu");
 				});
 			} else {
@@ -35,7 +35,7 @@ mSaveButton.onclick = function() {
 mViewButton.onclick = function() {
 	chrome.storage.sync.get('savedImages', function(result) {
 		images = result.savedImages || [];
-		message = {action: "openPage", page: chrome.extension.getURL("slideshow/slideshow.html"), images: images};
+		message = {action: "openPage", page: chrome.extension.getURL("gallery/gallery.html"), images: images};
 
 		chrome.runtime.sendMessage(message);
 	});
@@ -63,7 +63,7 @@ function injectScripts(callback) {
 					alert(errors[i]); // TODO: Make this appear more centered
 				}
 
-				callback;
+				callback();
 			});
 		});
 	});
