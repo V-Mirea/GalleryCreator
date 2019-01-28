@@ -41,7 +41,7 @@ document.body.onclick = async function(event) {
 			}
 		}
 
-		message = {action: "openPage", page: chrome.extension.getURL(GALLERY_PAGE), images: images};
+		message = {action: "openPage", page: chrome.extension.getURL(GALLERY_PAGE), images: images, title: document.title};
 
 		chrome.runtime.sendMessage(message, function(response) {
 			stopElementPicker();
@@ -110,13 +110,13 @@ function saveImage() {
 	var imageUrl = findImage(mContextMenuElement);
 
 	chrome.storage.sync.get('savedImages', function(result) {
-		images = result.savedImages || [];
+		mImages = result.savedImages || [];
 
-		if(!images.includes(imageUrl)) {
-			images.push(imageUrl);
+		if(!mImages.includes(imageUrl)) {
+			mImages.push(imageUrl);
 		}
 
-		chrome.storage.sync.set({'savedImages': images}, function() {
+		chrome.storage.sync.set({'savedImages': mImages}, function() {
 			alert("Image saved: " + imageUrl);
 		});
 	});

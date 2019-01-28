@@ -34,8 +34,8 @@ mSaveButton.onclick = function() {
 
 mViewButton.onclick = function() {
 	chrome.storage.sync.get('savedImages', function(result) {
-		images = result.savedImages || [];
-		message = {action: "openPage", page: chrome.extension.getURL("gallery/gallery.html"), images: images};
+		mImages = result.savedImages || [];
+		message = {action: "openPage", page: chrome.extension.getURL("gallery/gallery.html"), images: mImages, title: "Saved Images"};
 
 		chrome.runtime.sendMessage(message);
 	});

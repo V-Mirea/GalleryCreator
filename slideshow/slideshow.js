@@ -1,11 +1,14 @@
-var images = null;
+var mImages = null;
+var mTitle = null;
 var index = 0;
 
 $(document).ready(function() {
     chrome.runtime.sendMessage("getImages", function(response) {
-        images = response.images;
+        mImages = response.images;
+        mTitle = response.title || "Slideshow";
 
-        replaceImgElement(images[index]);
+        $(".title").text(mTitle);
+        replaceImgElement(mImages[index]);
     });
 });
 
@@ -17,8 +20,8 @@ function replaceImgElement(url) {
 
 document.onkeydown = function(event) {
     if (event.keyCode == '37' && index > 0) { //left
-        replaceImgElement(images[--index]);
-    } else if (event.keyCode == '39' && index < images.length - 1) { //right
-        replaceImgElement(images[++index]);
+        replaceImgElement(mImages[--index]);
+    } else if (event.keyCode == '39' && index < mImages.length - 1) { //right
+        replaceImgElement(mImages[++index]);
     }
 }
