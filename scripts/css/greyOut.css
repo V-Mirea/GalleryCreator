@@ -9,4 +9,5 @@
 	display:block;
 	z-index:100500;
 	overflow: auto;
+	cursor: crosshair;
 }
