@@ -15,20 +15,20 @@
     margin: auto;
 }   
 
-.navbox {
+#navbox {
     position: fixed;
     bottom: 15px;
     left: 15px;
     width: 400px;
     height: 200px;
 
+    color: white;
     border: 2px solid white; 
     background-color: black;
     opacity: 0.5;
   }
 
 .nav-header, .nav-body {
-      color: white;
       overflow: auto;
 }
 
@@ -63,5 +63,40 @@ ul, li {
 }
 
 .img-link:hover {
+    background-color: grey;
+}
+
+#minimize-nav {
+    width: 20px;
+    height: 20px;
+    border: 1px solid white;
+
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    text-align: center;
+}
+
+#minimize-nav:hover {
+    background-color: grey;
+}
+
+#maximize-nav {
+    width: 20px;
+    height: 20px;
+    color: white;
+    border: 1px solid white;
+
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    display: none;
+    cursor: default;
+
+    text-align: center;
+}
+
+#maximize-nav:hover {
     background-color: grey;
 }

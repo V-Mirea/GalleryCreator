@@ -26,6 +26,16 @@ $(document).ready(function() {
                 replaceImgElement($(event.target).text() - 1);
             });
         }
+
+        document.getElementById("minimize-nav").addEventListener('click', function() {
+            $("#navbox").css("display", "none");
+            $("#maximize-nav").css("display", "block");
+        });
+
+        document.getElementById("maximize-nav").addEventListener('click', function() {
+            $("#navbox").css("display", "block");
+            $("#maximize-nav").css("display", "none");
+        });
     });
 });
 
