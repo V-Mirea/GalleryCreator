@@ -43,7 +43,14 @@ mViewButton.onclick = function() {
 
 function toggleElementPicker() {
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-		chrome.tabs.sendMessage(tabs[0].id, "toggleElementPicker", {});
+		chrome.tabs.sendMessage(tabs[0].id, "toggleElementPicker", function(response) {
+			response = response || {};
+			if(response.toggled) {
+				const MESSAGES = ["Create a gallery", "Cancel gallery"];
+				var text = document.getElementById("pickElement").innerHTML;
+				document.getElementById("pickElement").innerHTML = (text==MESSAGES[0]) ? MESSAGES[1] : MESSAGES[0];
+			}
+		});
 	});
 }
 

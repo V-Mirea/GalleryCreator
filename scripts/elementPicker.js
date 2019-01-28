@@ -15,15 +15,17 @@ chrome.runtime.onMessage.addListener(
 	function (message, sender, sendResponse) {
 		if (message == "toggleElementPicker") {
 			if (mElementPickerRunning) {
-				stopElementPicker();			
+				stopElementPicker();	
 			} else {
 				runElementPicker();		
 			}
+			sendResponse({toggled: true});	
 		} else if (message == "isInjected") {
 			sendResponse({injected: true});
 		} else if (message == "saveImage") {
 			saveImage();
 
+			// TODO: Might need to send response
 			//sendResponse(contextMenuElement);
 		}
 	}
@@ -50,7 +52,8 @@ document.body.onclick = async function(event) {
 }
 
 document.addEventListener("mousedown", function(event){
-    if(event.button == 2) { //right click
+	if(event.button == 2) { //right click
+		// Keep track of last element to be rightclicked for the context menu
         mContextMenuElement = $(event.target);
     }
 }, true);
