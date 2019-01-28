@@ -2,19 +2,19 @@ var mImages = null;
 var mContextMenus = [];
 var mGalleryTitle = null;
 
+chrome.contextMenus.create({
+    "id": "deleteImage",
+    "title": "Delete image",
+    "documentUrlPatterns": ["chrome-extension://*/gallery/gallery.html"],
+    contexts: ["image"]
+});
+
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.action == "openPage") {
             chrome.tabs.create({url: request.page});
             mImages = request.images;
             mGalleryTitle = request.title || mGalleryTitle;
-
-            chrome.contextMenus.create({
-                "id": "deleteImage",
-                "title": "Delete",
-                "documentUrlPatterns": ["*://*/gallery/gallery.html"],
-                contexts: ["all"]
-            });
         } else if (request == "getImages") {
             sendResponse({images: mImages, title: mGalleryTitle});
         } else if (request == "addContextMenu") {
