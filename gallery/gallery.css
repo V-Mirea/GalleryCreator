@@ -1,0 +1,32 @@
+div.image {
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+
+    width: 300px;
+}
+    
+div.image:hover {
+    border: 1px solid #777;
+}
+    
+div.image img {
+    height: auto;
+    width: 100%;
+}
+
+.footer {
+    position: fixed;
+    bottom: 10px;
+    left: 0;
+
+    height: 25px;
+    width: 100%;
+
+    background-color: black;
+    text-align: center;
+    font-size: 20px;
+    color: white;
+
+    cursor: pointer;
+}
