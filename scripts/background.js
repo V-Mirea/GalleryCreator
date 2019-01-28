@@ -63,3 +63,16 @@ function removeSaveCM() {
         console.log(chrome.runtime.lastError); // TODO: Make sure this can be ignored
     });
 }
+
+function loadImages(images) {
+    chrome.storage.sync.get('savedImages', function(result) {
+		mImages = result.savedImages || [];
+
+        for(var i = 0; i < images.length; i++) {
+            if(!mImages.includes(images[i])) {
+                mImages.push(images[i]);
+            }
+        }
+        chrome.storage.sync.set({'savedImages': mImages});	
+	});
+}
