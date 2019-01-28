@@ -27,6 +27,41 @@
     opacity: 0.5;
   }
 
-  .nav-header, .nav-body {
+.nav-header, .nav-body {
       color: white;
-  }
+      overflow: auto;
+}
+
+.nav-header .title {
+    display: block;
+    float: left;
+    padding-left: 10px;
+}
+
+.nav-header .image-count {
+    display: block;
+    float: right;
+    padding-right: 10px;
+}
+
+ul, li {
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+}
+
+.img-link {
+    width: 20px;
+    height: 25px;
+    margin: 10px;
+
+    float: left;
+    text-align: center;
+
+    cursor: default;
+    list-style: none;
+}
+
+.img-link:hover {
+    background-color: grey;
+}
