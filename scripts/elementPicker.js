@@ -121,7 +121,7 @@ function saveImage() {
 
 		chrome.storage.sync.set({'savedImages': mImages}, function() {
 			if(chrome.runtime.lastError) {
-				alert(chorome.runetime.lastError);
+				alert(chrome.runtime.lastError);
 			} else {
 				alert("Image saved: " + imageUrl);
 			}
