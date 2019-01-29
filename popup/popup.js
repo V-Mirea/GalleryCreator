@@ -1,3 +1,4 @@
+'use strict;'
 var mElementPickerRunning;
 
 var mGalleryButton = document.getElementById("pickElement");
@@ -33,7 +34,7 @@ mSaveButton.onclick = function() {
 }
 
 mViewButton.onclick = function() {
-	chrome.storage.sync.get('savedImages', function(result) {
+	chrome.storage.local.get('savedImages', function(result) {
 		mImages = result.savedImages || [];
 		message = {action: "openPage", page: chrome.extension.getURL("gallery/gallery.html"), images: mImages, title: "Saved Images"};
 

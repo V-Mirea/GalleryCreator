@@ -112,14 +112,14 @@ function findImage(target) {
 function saveImage() {
 	var imageUrl = findImage(mContextMenuElement);
 
-	chrome.storage.sync.get('savedImages', function(result) {
+	chrome.storage.local.get('savedImages', function(result) {
 		mImages = result.savedImages || [];
 
 		if(!mImages.includes(imageUrl)) {
 			mImages.push(imageUrl);
 		}
 
-		chrome.storage.sync.set({'savedImages': mImages}, function() {
+		chrome.storage.local.set({'savedImages': mImages}, function() {
 			if(chrome.runtime.lastError) {
 				alert(chrome.runtime.lastError);
 			} else {
