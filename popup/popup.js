@@ -4,6 +4,7 @@ var mElementPickerRunning;
 var mGalleryButton = document.getElementById("pickElement");
 var mSaveButton = document.getElementById("saveImages");
 var mViewButton = document.getElementById("viewGallery");
+var mExportButton = document.getElementById("exportImages");
 
 mGalleryButton.onclick = function() {
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -42,6 +43,12 @@ mViewButton.onclick = function() {
 	});
 }
 
+mExportButton.onclick = function() {
+	chrome.storage.local.get('savedImages', function(result) {
+		exportImages(result.savedImages); 
+	});
+}
+
 function toggleElementPicker() {
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 		chrome.tabs.sendMessage(tabs[0].id, "toggleElementPicker", function(response) {
@@ -75,4 +82,30 @@ function injectScripts(callback) {
 			});
 		});
 	});
+}
+
+function exportImages(images) {
+	images = images || [];
+	//var imageString = "" + images;
+
+	var imagesString = "[\n";
+	for(var i = 0; i < images.length; i++) {
+		imagesString += "'" + images[i] + "',\n";
+	}
+	imagesString += "]"
+
+	download("SavedImages.txt", imagesString);
+}
+
+function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
 }
