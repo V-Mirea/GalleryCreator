@@ -65,7 +65,7 @@ function removeSaveCM() {
 }
 
 function loadImages(images) {
-    chrome.storage.sync.get('savedImages', function(result) {
+    chrome.storage.local.get('savedImages', function(result) {
 		mImages = result.savedImages || [];
 
         for(var i = 0; i < images.length; i++) {
@@ -73,6 +73,6 @@ function loadImages(images) {
                 mImages.push(images[i]);
             }
         }
-        chrome.storage.sync.set({'savedImages': mImages});	
+        chrome.storage.local.set({'savedImages': mImages});	
 	});
 }
