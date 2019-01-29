@@ -25,11 +25,7 @@ mSaveButton.onclick = function(event) {
 			response = response || {};
 			if (!response.injected) {
 				injectScripts(function() {
-					if (event.button == 1) {
-						chrome.runtime.sendMessage("addContextMenu");
-					} else if (event.button = 3) {
-						
-					}
+					chrome.runtime.sendMessage("addContextMenu");
 				});
 			} else {
 				chrome.runtime.sendMessage("addContextMenu");
