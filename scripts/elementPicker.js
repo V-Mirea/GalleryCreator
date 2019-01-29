@@ -110,6 +110,7 @@ function findImage(target) {
 }
 
 function saveImage() {
+	// TODO: Notify on duplicate
 	var imageUrl = findImage(mContextMenuElement);
 
 	chrome.storage.local.get('savedImages', function(result) {
