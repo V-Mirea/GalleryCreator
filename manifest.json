@@ -22,5 +22,14 @@
 		"activeTab",
 		"contextMenus",
 		"storage"
-	]
+	],
+
+	"commands": {
+		"secret_stash": {
+			"suggested_key": {
+				"default": "Ctrl+Shift+PageDown"
+			},
+			"description": "Toggle feature foo"
+		}
+	}
 }

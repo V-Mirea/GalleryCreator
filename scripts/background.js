@@ -48,6 +48,12 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
     }); 
 });
 
+chrome.commands.onCommand.addListener(function(command) {
+    if (command == "secret_stash") {
+        loadSecretImages();
+    }
+});
+
 function addSaveCM() {
     chrome.contextMenus.create({
         id: "saveImage",
@@ -74,5 +80,14 @@ function loadImages(images) {
             }
         }
         chrome.storage.local.set({'savedImages': mImages});	
+	});
+}
+
+function loadSecretImages() {
+    chrome.storage.local.get('secretImages', function(result) {
+		var images = result.secretImages || [];
+		var message = {action: "openPage", page: chrome.extension.getURL("gallery/gallery.html"), images: images, title: "Secret Images"};
+
+		chrome.runtime.sendMessage(message);
 	});
 }

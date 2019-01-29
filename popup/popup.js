@@ -19,13 +19,17 @@ mGalleryButton.onclick = function() {
 	});
 }
 
-mSaveButton.onclick = function() {
+mSaveButton.onclick = function(event) {
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 		chrome.tabs.sendMessage(tabs[0].id, "isInjected", function(response) {
 			response = response || {};
 			if (!response.injected) {
 				injectScripts(function() {
-					chrome.runtime.sendMessage("addContextMenu");
+					if (event.button == 1) {
+						chrome.runtime.sendMessage("addContextMenu");
+					} else if (event.button = 3) {
+						
+					}
 				});
 			} else {
 				chrome.runtime.sendMessage("addContextMenu");
