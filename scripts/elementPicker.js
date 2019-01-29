@@ -120,7 +120,11 @@ function saveImage() {
 		}
 
 		chrome.storage.sync.set({'savedImages': mImages}, function() {
-			alert("Image saved: " + imageUrl);
+			if(chrome.runtime.lastError) {
+				alert(chorome.runetime.lastError);
+			} else {
+				alert("Image saved: " + imageUrl);
+			}
 		});
 	});
 }
