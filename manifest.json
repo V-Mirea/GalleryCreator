@@ -25,11 +25,11 @@
 	],
 
 	"commands": {
-		"secret_stash": {
+		"secret-mode": {
 			"suggested_key": {
-				"default": "Ctrl+Shift+PageDown"
+				"default": "Ctrl+Shift+Down"
 			},
-			"description": "Toggle feature foo"
+			"description": "Toggle secret mode"
 		}
 	}
 }
