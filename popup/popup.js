@@ -1,12 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 'use strict';
-=======
-'use strict;'
->>>>>>> 0ad5bb3... Change sync storage to local
-=======
-'use strict';
->>>>>>> 893faeb... Turn strict mode on
 var mElementPickerRunning;
 
 var mGalleryButton = document.getElementById("pickElement");
@@ -44,18 +36,8 @@ mSaveButton.onclick = function() {
 
 mViewButton.onclick = function() {
 	chrome.storage.local.get('savedImages', function(result) {
-<<<<<<< HEAD
-<<<<<<< HEAD
 		var images = result.savedImages || [];
 		var message = {action: "openPage", page: chrome.extension.getURL("gallery/gallery.html"), images: images, title: "Saved Images"};
-=======
-		mImages = result.savedImages || [];
-		message = {action: "openPage", page: chrome.extension.getURL("gallery/gallery.html"), images: mImages, title: "Saved Images"};
->>>>>>> 0ad5bb3... Change sync storage to local
-=======
-		var images = result.savedImages || [];
-		var message = {action: "openPage", page: chrome.extension.getURL("gallery/gallery.html"), images: images, title: "Saved Images"};
->>>>>>> 893faeb... Turn strict mode on
 
 		chrome.runtime.sendMessage(message);
 	});
