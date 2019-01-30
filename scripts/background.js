@@ -1,6 +1,7 @@
 var mImages = null;
 var mContextMenus = [];
 var mGalleryTitle = null;
+var mSecretMode = false;
 
 chrome.contextMenus.create({
     "id": "deleteImage",
@@ -21,14 +22,17 @@ chrome.runtime.onMessage.addListener(
             addSaveCM();
         } else if (request == "removeContextMenu") {
             removeSaveCM();
-        } 
+        } else if (request == "getSecretMode") {
+            sendResponse(mSecretMode);
+        }
     }
 );
 
 chrome.contextMenus.onClicked.addListener(function(info, tab) {
     if (info.menuItemId == "saveImage") {
+        var message = {action: "saveImage", secret: mSecretMode};
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, "saveImage", function(response) {
+            chrome.tabs.sendMessage(tabs[0].id, message, function(response) {
                 // TODO: check if saved
             });
         });
@@ -49,8 +53,10 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
 });
 
 chrome.commands.onCommand.addListener(function(command) {
-    if (command == "secret_stash") {
-        loadSecretImages();
+    if (command == "secret-mode") {
+        mSecretMode = !mSecretMode;
+        var message = "Secret mode is " + (mSecretMode ? "on" : "off");
+        alert(message);
     }
 });
 
@@ -71,7 +77,7 @@ function removeSaveCM() {
 }
 
 function loadImages(images) {
-    chrome.storage.local.get('savedImages', function(result) {
+    chrome.storage.local.get("savedImages", function(result) {
 		mImages = result.savedImages || [];
 
         for(var i = 0; i < images.length; i++) {
@@ -79,15 +85,6 @@ function loadImages(images) {
                 mImages.push(images[i]);
             }
         }
-        chrome.storage.local.set({'savedImages': mImages});	
-	});
-}
-
-function loadSecretImages() {
-    chrome.storage.local.get('secretImages', function(result) {
-		var images = result.secretImages || [];
-		var message = {action: "openPage", page: chrome.extension.getURL("gallery/gallery.html"), images: images, title: "Secret Images"};
-
-		chrome.runtime.sendMessage(message);
+        chrome.storage.local.set({"savedImages": mImages});	
 	});
 }

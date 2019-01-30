@@ -17,7 +17,8 @@ $(document).ready(function() {
         }
 
         $(".footer").click(function() {
-            message = {action: "openPage", page: chrome.extension.getURL("slideshow/slideshow.html"), images: mImages};
+            // TODO: Make this an option
+            message = {action: "openPage", page: chrome.extension.getURL("slideshow/slideshow.html"), images: shuffle(mImages)};
 		    chrome.runtime.sendMessage(message);
         });
     });
@@ -43,4 +44,15 @@ function deleteImage(element) {
 
     var index = mImages.indexOf(url);
     if (index !== -1) mImages.splice(index, 1);
+}
+
+function shuffle(a) {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
 }

@@ -22,8 +22,8 @@ chrome.runtime.onMessage.addListener(
 			sendResponse({toggled: true});	
 		} else if (message == "isInjected") {
 			sendResponse({injected: true});
-		} else if (message == "saveImage") {
-			saveImage();
+		} else if (message.action == "saveImage") {
+			saveImage(message.secret);
 
 			// TODO: Might need to send response
 			//sendResponse(contextMenuElement);
@@ -109,25 +109,43 @@ function findImage(target) {
 	}
 }
 
-function saveImage() {
+function saveImage(secret) {
 	// TODO: Notify on duplicate
 	var imageUrl = findImage(mContextMenuElement);
 
-	chrome.storage.local.get('savedImages', function(result) {
-		mImages = result.savedImages || [];
+	if(!secret) {
+		chrome.storage.local.get('savedImages', function(result) {
+			mImages = result.savedImages || [];
 
-		if(!mImages.includes(imageUrl)) {
-			mImages.push(imageUrl);
-		}
-
-		chrome.storage.local.set({'savedImages': mImages}, function() {
-			if(chrome.runtime.lastError) {
-				alert(chrome.runtime.lastError);
-			} else {
-				alert("Image saved: " + imageUrl);
+			if(!mImages.includes(imageUrl)) {
+				mImages.push(imageUrl);
 			}
+
+			chrome.storage.local.set({'savedImages': mImages}, function() {
+				if(chrome.runtime.lastError) {
+					alert(chrome.runtime.lastError);
+				} else {
+					alert("Image saved: " + imageUrl);
+				}
+			});
 		});
-	});
+	} else {
+		chrome.storage.local.get('secretImages', function(result) {
+			mImages = result.secretImages || [];
+
+			if(!mImages.includes(imageUrl)) {
+				mImages.push(imageUrl);
+			}
+
+			chrome.storage.local.set({'secretImages': mImages}, function() {
+				if(chrome.runtime.lastError) {
+					alert(chrome.runtime.lastError);
+				} else {
+					alert("Image saved to secret: " + imageUrl);
+				}
+			});
+		});
+	}
 }
 
 function runElementPicker() {
