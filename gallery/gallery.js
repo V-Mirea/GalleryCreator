@@ -43,4 +43,6 @@ function deleteImage(element) {
 
     var index = mImages.indexOf(url);
     if (index !== -1) mImages.splice(index, 1);
+
+    chrome.runtime.sendMessage({action: "deleteImage", url: url});
 }

@@ -21,7 +21,9 @@ chrome.runtime.onMessage.addListener(
             addSaveCM();
         } else if (request == "removeContextMenu") {
             removeSaveCM();
-        } 
+        }  else if (request.action == deleteImage) {
+            deleteImage(request.url);
+        }
     }
 );
 
@@ -75,4 +77,8 @@ function loadImages(images) {
         }
         chrome.storage.local.set({'savedImages': mImages});	
 	});
+}
+
+function deleteImage(url) {
+    
 }
