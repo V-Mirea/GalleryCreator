@@ -8,7 +8,7 @@ $(document).ready(function() {
         for(let i = 0; i < mImages.length; i++) {
             var element = `
                 <div class="image">
-                    <a target="_blank" href="` + mImages[i] + `">
+                    <a>
                         <img src="` + mImages[i] + `" alt="Image missing">
                     </a>
                 </div>
@@ -21,6 +21,15 @@ $(document).ready(function() {
             message = {action: "openPage", page: chrome.extension.getURL("slideshow/slideshow.html"), images: shuffle(mImages)};
 		    chrome.runtime.sendMessage(message);
         });
+
+        var imageElements = document.getElementsByClassName("image");
+        for(var i = 0; i < imageElements.length; i++) {
+            $(imageElements[i]).click(function() {
+                var index = mImages.indexOf($(this).find("img").attr('src'));
+                message = {action: "openPage", page: chrome.extension.getURL("slideshow/slideshow.html"), images: mImages, index: index};
+                chrome.runtime.sendMessage(message);
+            });
+        }
     });
 });
 
@@ -44,6 +53,8 @@ function deleteImage(element) {
 
     var index = mImages.indexOf(url);
     if (index !== -1) mImages.splice(index, 1);
+
+    chrome.runtime.sendMessage({action: "deleteImage", url: url});
 }
 
 function shuffle(a) {

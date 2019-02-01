@@ -1,5 +1,4 @@
 'use strict';
-var mElementPickerRunning;
 
 var mGalleryButton = document.getElementById("pickElement");
 var mSaveButton = document.getElementById("saveImages");
