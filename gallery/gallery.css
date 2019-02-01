@@ -8,6 +8,7 @@ div.image {
     
 div.image:hover {
     border: 1px solid #777;
+    cursor: pointer;
 }
     
 div.image img {
