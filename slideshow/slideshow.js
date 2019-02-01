@@ -7,6 +7,7 @@ $(document).ready(function() {
     chrome.runtime.sendMessage("getImages", function(response) {
         mImages = response.images;
         mTitle = response.title || "Slideshow";
+        mGalleryIndex = response.index;
 
         $(".title").text(mTitle);
         for(var i = 0; i < mImages.length; i++) {
@@ -18,7 +19,7 @@ $(document).ready(function() {
             $(".nav-body .links").append(elem);
         }
 
-        replaceImgElement(0);
+        replaceImgElement(mGalleryIndex);
 
         var links = document.getElementsByClassName("img-link");
         for (var i = 0; i < links.length; i++) {

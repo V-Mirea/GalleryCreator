@@ -1,6 +1,7 @@
 var mImages = null;
 var mContextMenus = [];
 var mGalleryTitle = null;
+var mStartIndex = 0;
 
 chrome.contextMenus.create({
     "id": "deleteImage",
@@ -15,8 +16,9 @@ chrome.runtime.onMessage.addListener(
             chrome.tabs.create({url: request.page});
             mImages = request.images;
             mGalleryTitle = request.title || mGalleryTitle;
+            mStartIndex = request.index || 0;
         } else if (request == "getImages") {
-            sendResponse({images: mImages, title: mGalleryTitle});
+            sendResponse({images: mImages, title: mGalleryTitle, index: mStartIndex});
         } else if (request == "addContextMenu") {
             addSaveCM();
         } else if (request == "removeContextMenu") {
