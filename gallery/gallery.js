@@ -26,7 +26,8 @@ $(document).ready(function() {
         for(var i = 0; i < imageElements.length; i++) {
             $(imageElements[i]).click(function() {
                 var index = mImages.indexOf($(this).find("img").attr('src'));
-                message = {action: "openPage", page: chrome.extension.getURL("slideshow/slideshow.html"), images: mImages, index: index};
+                message = {action: "openPage", page: chrome.extension.getURL("slideshow/slideshow.html"), 
+                    images: mImages, index: index, newTab: false};
                 chrome.runtime.sendMessage(message);
             });
         }

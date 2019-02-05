@@ -14,7 +14,11 @@ chrome.contextMenus.create({
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.action == "openPage") {
-            chrome.tabs.create({url: request.page});
+            let newTab = request.newTab;
+            if (typeof newTab === 'undefined') newTab = true;
+            if (newTab) chrome.tabs.create({url: request.page});
+            else chrome.tabs.update({url: request.page});
+
             mImages = request.images;
             mGalleryTitle = request.title || mGalleryTitle;
             mStartIndex = request.index || 0;
