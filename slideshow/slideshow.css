@@ -24,11 +24,24 @@
 
     color: white;
     border: 2px solid white; 
-    border-radius: 25px;
-    background-color: black;
-    opacity: 0.5;
+    background-color: rgba(0, 0, 0, 0.5);
   }
 
+#minimize-nav {
+    width: 30px;
+    height: 20px;
+    border: 1px solid white;
+
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    text-align: center;
+}
+
+.nav-header {
+    height: 25%;
+}
 
 .nav-header .title {
     display: inline-block;
@@ -46,30 +59,18 @@ hr {
 }
 
 .nav-body {
-    height: 100%;
-}
-
-#minimize-nav {
-    width: 30px;
-    height: 20px;
-    border: 1px solid white;
-
-    position: absolute;
-    right: 15px;
-    top: 0;
-
-    text-align: center;
+    height: 75%;
 }
 
 ul {
-    overflow:hidden;
-    overflow-y: scroll;
+    overflow: hidden;
+    overflow-y: auto;
+    height: 100%;
 }
 
 ul, li {
     margin: 0;
     padding: 0;
-    /*overflow: auto;*/
 }
 
 .img-link {
