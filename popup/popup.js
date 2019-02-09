@@ -22,11 +22,11 @@ mSaveButton.onclick = function(event) {
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 		chrome.tabs.sendMessage(tabs[0].id, "isInjected", function(response) {
 			response = response || {};
-			if (!response.injected) {
+			if(chrome.runtime.lastError || !response.injected) {
 				injectScripts(function() {
 					chrome.runtime.sendMessage("addContextMenu");
 				});
-			} else {
+        	} else {
 				chrome.runtime.sendMessage("addContextMenu");
 			}
 		});

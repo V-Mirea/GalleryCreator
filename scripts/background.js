@@ -9,6 +9,8 @@ chrome.contextMenus.create({
     "title": "Delete image",
     "documentUrlPatterns": ["chrome-extension://*/gallery/gallery.html"],
     contexts: ["image"]
+}, function() {
+    console.log(chrome.runtime.lastError);
 });
 
 chrome.runtime.onMessage.addListener(
@@ -48,14 +50,16 @@ chrome.contextMenus.onClicked.addListener(function(info, tab) {
 });
 
 chrome.tabs.onActivated.addListener(function(activeInfo) {
-    console.log(activeInfo.tabId);
-
     chrome.tabs.sendMessage(activeInfo.tabId, "isInjected", function(response) {
-        response = response || {};
-        if (!response.injected) {
-            removeSaveCM();
+        if(chrome.runtime.lastError) {
+                removeSaveCM();
         } else {
-            addSaveCM();
+            response = response || {};
+            if (!response.injected) {
+                removeSaveCM();
+            } else {
+                addSaveCM();
+            }
         }
     }); 
 });
