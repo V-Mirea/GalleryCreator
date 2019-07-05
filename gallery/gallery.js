@@ -9,7 +9,7 @@ $(document).ready(function() {
             var element = `
                 <div class="image">
                     <a>
-                        <img src="` + mImages[i] + `" alt="Image missing">
+                        <img id="` + mImages[i].id + `" src="` + mImages[i].url + `" alt="Image missing">
                     </a>
                 </div>
             `;
@@ -49,13 +49,13 @@ chrome.contextMenus.onClicked.addListener(function(info, tab) {
 function deleteImage(element) {
     //console.log($("img[src='" + url + "']"));
 
-    var url = mContextMenuElement.attr('src');
+    var id = mContextMenuElement.attr('id');
     mContextMenuElement.closest(".image").css("display", "none");
 
-    var index = mImages.indexOf(url);
+    var index = mImages.indexOf(id);
     if (index !== -1) mImages.splice(index, 1);
 
-    chrome.runtime.sendMessage({action: "deleteImage", url: url});
+    chrome.runtime.sendMessage({action: "deleteImage", id: id});
 }
 
 function shuffle(a) {

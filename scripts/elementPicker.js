@@ -112,20 +112,25 @@ function findImage(target) {
 function saveImage(secret) {
 	// TODO: Notify on duplicate
 	var imageUrl = findImage(mContextMenuElement);
+	var image = {
+		id: Math.random().toString(36).substr(2, 9),
+		url: imageUrl,
+		tags: []
+	}
 
 	if(!secret) {
 		chrome.storage.local.get('savedImages', function(result) {
 			mImages = result.savedImages || [];
 
-			if(!mImages.includes(imageUrl)) {
-				mImages.push(imageUrl);
+			if(!mImages.includes(image)) {
+				mImages.push(image);
 			}
 
 			chrome.storage.local.set({'savedImages': mImages}, function() {
 				if(chrome.runtime.lastError) {
 					alert(chrome.runtime.lastError);
 				} else {
-					alert("Image saved: " + imageUrl);
+					//alert("Image saved: " + imageUrl);
 				}
 			});
 		});
@@ -133,8 +138,8 @@ function saveImage(secret) {
 		chrome.storage.local.get('secretImages', function(result) {
 			mImages = result.secretImages || [];
 
-			if(!mImages.includes(imageUrl)) {
-				mImages.push(imageUrl);
+			if(!mImages.includes(image)) {
+				mImages.push(image);
 			}
 
 			chrome.storage.local.set({'secretImages': mImages}, function() {

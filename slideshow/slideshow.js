@@ -42,7 +42,7 @@ $(document).ready(function() {
 
 function replaceImgElement(index) {
     $(".display").remove();
-    galleryElement = "<img class=\"display\" src=\"" + mImages[index] + "\"></img>"
+    galleryElement = "<img class=\"display\" src=\"" + mImages[index].url + "\"></img>"
     $(".gallery").append(galleryElement);
 
     $(".image-count").text(index + 1 + "/" + mImages.length);

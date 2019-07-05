@@ -55,7 +55,7 @@ mViewButton.onclick = function() {
 
 mExportButton.onclick = function() {
 	chrome.storage.local.get('secretImages', function(result) {
-		exportImages(result.savedImages); 
+		exportImages(result.secretImages); 
 	});
 }
 
@@ -100,11 +100,11 @@ function exportImages(images) {
 
 	var imagesString = "[\n";
 	for(var i = 0; i < images.length; i++) {
-		imagesString += "'" + images[i] + "',\n";
+		imagesString += JSON.stringify(images[i]) + ",\n";
 	}
 	imagesString += "]"
 
-	download("SavedImages.txt", imagesString);
+	download("SavedImages.json", imagesString);
 }
 
 function download(filename, text) {
