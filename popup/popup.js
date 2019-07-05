@@ -42,7 +42,7 @@ mViewButton.onclick = function() {
 	
 				chrome.runtime.sendMessage(message);
 			});
-		}else {
+		} else {
 			chrome.storage.local.get('savedImages', function(result) {
 				var images = result.savedImages || [];
 				var message = {action: "openPage", page: chrome.extension.getURL("gallery/gallery.html"), images: images, title: "Saved Images"};
@@ -54,8 +54,17 @@ mViewButton.onclick = function() {
 }
 
 mExportButton.onclick = function() {
-	chrome.storage.local.get('secretImages', function(result) {
-		exportImages(result.secretImages); 
+	var saveMode;
+	chrome.runtime.sendMessage("getSecretMode", function(secret) {
+		if (secret) {
+			chrome.storage.local.get("secretImages", function(result) {
+				exportImages(result["secretImages"]); 
+			});
+		} else {
+			chrome.storage.local.get("savedImages", function(result) {
+				exportImages(result["savedImages"]); 
+			});
+		}
 	});
 }
 
