@@ -54,7 +54,7 @@ mViewButton.onclick = function() {
 }
 
 mExportButton.onclick = function() {
-	chrome.storage.local.get('savedImages', function(result) {
+	chrome.storage.local.get('secretImages', function(result) {
 		exportImages(result.savedImages); 
 	});
 }
@@ -74,18 +74,18 @@ function toggleElementPicker() {
 
 function injectScripts(callback) {
 	var errors = [];
-	chrome.tabs.insertCSS(null, {file: 'scripts/css/greyOut.css'}, function() {
+	chrome.tabs.insertCSS(null, {file: '/scripts/css/greyOut.css'}, function() {
 		if(chrome.runtime.lastError) errors.push(chrome.runtime.lastError.message);
-		chrome.tabs.executeScript(null, {file: 'scripts/lib/jquery-3.3.1.min.js'}, function() {
+		chrome.tabs.executeScript(null, {file: '/scripts/lib/jquery-3.3.1.min.js'}, function() {
 			if(chrome.runtime.lastError) errors.push(chrome.runtime.lastError.message);
-			chrome.tabs.executeScript(null, {file: 'scripts/elementPicker.js'}, function() {
+			chrome.tabs.executeScript(null, {file: '/scripts/elementPicker.js'}, function() {
 				if(chrome.runtime.lastError) errors.push(chrome.runtime.lastError.message);		
 				errors = errors.filter(function(item, index){ // Remove duplicate errors
 					return errors.indexOf(item) >= index;
 				});
 
 				for(let i = 0; i < errors.length; i++) { // Display all errors
-					alert(errors[i]); // TODO: Make this appear more centered
+					console.log(errors[i]); // TODO: Make this appear more centered
 				}
 
 				callback();

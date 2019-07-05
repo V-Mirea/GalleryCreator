@@ -19,9 +19,10 @@
 	},
 	
 	"permissions": [
-		"activeTab",
 		"contextMenus",
-		"storage"
+		"storage",
+		"tabs",
+		"<all_urls>"
 	],
 
 	"commands": {
