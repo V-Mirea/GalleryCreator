@@ -3,7 +3,6 @@ var mTitle = null;
 var mGalleryIndex = 0;
 
 $(document).ready(function() {
-    console.log("Started");
     chrome.runtime.sendMessage("getImages", function(response) {
         mImages = response.images;
         mTitle = response.title || "Slideshow";
@@ -41,6 +40,8 @@ $(document).ready(function() {
 });
 
 function replaceImgElement(index) {
+    console.log(index);
+
     $(".display").remove();
     galleryElement = "<img class=\"display\" src=\"" + mImages[index].url + "\"></img>"
     $(".gallery").append(galleryElement);

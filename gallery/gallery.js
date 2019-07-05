@@ -25,7 +25,8 @@ $(document).ready(function() {
         var imageElements = document.getElementsByClassName("image");
         for(var i = 0; i < imageElements.length; i++) {
             $(imageElements[i]).click(function() {
-                var index = mImages.indexOf($(this).find("img").attr('src'));
+                var url = $(this).find("img").attr('src');
+                var index = mImages.map((image) => {return image.url}).indexOf(url);
                 message = {action: "openPage", page: chrome.extension.getURL("slideshow/slideshow.html"), 
                     images: mImages, index: index, newTab: false};
                 chrome.runtime.sendMessage(message);
