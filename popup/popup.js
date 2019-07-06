@@ -1,53 +1,61 @@
+import * as Messager from '../modules/messager.js';
+
 'use strict';
 
+/**
+ * Variable declarations
+ */
 var mGalleryButton = document.getElementById("pickElement");
 var mSaveButton = document.getElementById("saveImages");
 var mViewButton = document.getElementById("viewGallery");
 var mExportButton = document.getElementById("exportImages");
 
+/**
+ * Gallery button click
+ */
 mGalleryButton.onclick = function() {
-	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-		chrome.tabs.sendMessage(tabs[0].id, "isInjected", function(response) {
+	Messager.messageContentScript("isInjected", 
+		function(response) {
 			response = response || {};
 			if (!response.injected) {
 				injectScripts(toggleElementPicker);
 			} else {
 				toggleElementPicker();
 			}
-		});
-	});
+		}
+	);
 }
 
 mSaveButton.onclick = function(event) {
-	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-		chrome.tabs.sendMessage(tabs[0].id, "isInjected", function(response) {
+	Messager.messageContentScript("isInjected", 
+		function(response) {
 			response = response || {};
 			if(chrome.runtime.lastError || !response.injected) {
 				injectScripts(function() {
-					chrome.runtime.sendMessage("addContextMenu");
+					Messager.messageBackgroundScript("addContextMenu");
 				});
         	} else {
-				chrome.runtime.sendMessage("addContextMenu");
+				Messager.messageBackgroundScript("addContextMenu");
 			}
-		});
-	});
+		}
+	);
 }
 
 mViewButton.onclick = function() {
-	chrome.runtime.sendMessage("getSecretMode", function(secret) {
+	Messager.messageBackgroundScript("getSecretMode", function(secret) {
 		if(secret) {
 			chrome.storage.local.get('secretImages', function(result) {
 				var images = result.secretImages || [];
 				var message = {action: "openPage", page: chrome.extension.getURL("gallery/gallery.html"), images: images, title: "Secret Images"};
 	
-				chrome.runtime.sendMessage(message);
+				Messager.messageBackgroundScript(message);
 			});
 		} else {
 			chrome.storage.local.get('savedImages', function(result) {
 				var images = result.savedImages || [];
 				var message = {action: "openPage", page: chrome.extension.getURL("gallery/gallery.html"), images: images, title: "Saved Images"};
 	
-				chrome.runtime.sendMessage(message);
+				Messager.messageBackgroundScript(message);
 			});
 		}
 	});
@@ -55,7 +63,7 @@ mViewButton.onclick = function() {
 
 mExportButton.onclick = function() {
 	var saveMode;
-	chrome.runtime.sendMessage("getSecretMode", function(secret) {
+	Messager.messageBackgroundScript("getSecretMode", function(secret) {
 		if (secret) {
 			chrome.storage.local.get("secretImages", function(result) {
 				exportImages(result["secretImages"]); 
@@ -69,15 +77,13 @@ mExportButton.onclick = function() {
 }
 
 function toggleElementPicker() {
-	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-		chrome.tabs.sendMessage(tabs[0].id, "toggleElementPicker", function(response) {
-			response = response || {};
-			if(response.toggled) {
-				const MESSAGES = ["Create a gallery", "Cancel gallery"];
-				var text = document.getElementById("pickElement").innerHTML;
-				document.getElementById("pickElement").innerHTML = (text==MESSAGES[0]) ? MESSAGES[1] : MESSAGES[0];
-			}
-		});
+	Messager.messageContentScript("toggleElementPicker", function(response) {
+		response = response || {};
+		if(response.toggled) {
+			const MESSAGES = ["Create a gallery", "Cancel gallery"];
+			var text = document.getElementById("pickElement").innerHTML;
+			document.getElementById("pickElement").innerHTML = (text==MESSAGES[0]) ? MESSAGES[1] : MESSAGES[0];
+		}
 	});
 }
 

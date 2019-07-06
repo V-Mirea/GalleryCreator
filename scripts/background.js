@@ -1,3 +1,5 @@
+import * as Messager from '../modules/messager.js';
+
 var mImages = null;
 var mContextMenus = [];
 var mGalleryTitle = null;
@@ -42,10 +44,8 @@ chrome.runtime.onMessage.addListener(
 chrome.contextMenus.onClicked.addListener(function(info, tab) {
     if (info.menuItemId == "saveImage") {
         var message = {action: "saveImage", secret: mSecretMode};
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, message, function(response) {
-                // TODO: check if saved
-            });
+        Messager.messageContentScript(message, function(response) {
+            // TODO: check if saved
         });
     }
 });
