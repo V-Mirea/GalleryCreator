@@ -4,6 +4,8 @@ var mGalleryButton = document.getElementById("pickElement");
 var mSaveButton = document.getElementById("saveImages");
 var mViewButton = document.getElementById("viewGallery");
 var mExportButton = document.getElementById("exportImages");
+var mLoadButton = document.getElementById("loadImages");
+var mFileInput = document.getElementById("file-input");
 
 mGalleryButton.onclick = function() {
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -66,6 +68,26 @@ mExportButton.onclick = function() {
 			});
 		}
 	});
+
+}
+
+mLoadButton.onclick = function() {
+	document.getElementById('file-input').click();
+}
+
+mFileInput.onchange = function() {
+	var uploadedFile = mFileInput.files.item(0);
+
+	var fileReader = new FileReader();
+    fileReader.onload = function(fileLoadedEvent) {
+		console.log("read");
+        var textFromFileLoaded = fileLoadedEvent.target.result;
+        var images = JSON.parse(textFromFileLoaded);
+        
+		chrome.runtime.sendMessage({action: "loadImages", images: images});
+	};
+	console.log("about to read");
+    fileReader.readAsText(uploadedFile, "UTF-8");
 }
 
 function toggleElementPicker() {
@@ -109,9 +131,11 @@ function exportImages(images) {
 
 	var imagesString = "[\n";
 	for(var i = 0; i < images.length; i++) {
-		imagesString += JSON.stringify(images[i]) + ",\n";
+		imagesString += JSON.stringify(images[i]);
+		if(i != images.length -1) imagesString += ",";
+		imagesString += "\n";
 	}
-	imagesString += "]"
+	imagesString += "]";
 
 	download("SavedImages.json", imagesString);
 }

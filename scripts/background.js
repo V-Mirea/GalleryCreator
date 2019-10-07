@@ -35,7 +35,9 @@ chrome.runtime.onMessage.addListener(
         }  else if (request.action == "deleteImage") {
             console.log("got it");
             deleteImage(request.id);
-        } 
+        } else if (request.action == "loadImages") {
+            loadImages(request.images);
+        }
     }
 );
 
@@ -91,7 +93,7 @@ function removeSaveCM() {
 
 function loadImages(images) {
     chrome.storage.local.get("secretImages", function(result) {
-		mImages = result.savedImages || [];
+        mImages = result.savedImages || [];
 
         for(var i = 0; i < images.length; i++) {
             if(!mImages.includes(images[i])) {
@@ -99,7 +101,7 @@ function loadImages(images) {
             }
         }
         chrome.storage.local.set({"secretImages": mImages});	
-	});
+    });
 }
 
 function deleteImage(id) {
