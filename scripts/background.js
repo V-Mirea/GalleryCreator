@@ -5,20 +5,32 @@ var mSecretMode = false;
 var mStartIndex = 0;
 var mUser = {loggedIn: false, id: "", username: ""};
 
-chrome.contextMenus.create({
-    "id": "deleteImage",
-    "title": "Delete image",
-    "documentUrlPatterns": ["moz-extension://*/gallery/gallery.html"],
-    contexts: ["image"]
-}, function() {
-    console.log(chrome.runtime.lastError);
+window.addEventListener('load', function () {
+		chrome.contextMenus.create({
+		id: "deleteImage",
+		title: "Delete image",
+		documentUrlPatterns: ["moz-extension://*/gallery/gallery.html"],
+		contexts: ["image"]
+	}, function() {
+		console.log(chrome.runtime.lastError);
+	});
+
+	chrome.contextMenus.create({
+			id: "saveImage",
+			title: "Save image",
+			documentUrlPatterns: ["<all_urls>"],
+			contexts: ["all"]
+		}, function() {
+			console.log(chrome.runtime.lastError); // TODO: Make sure this can be ignored
+		});
 });
 
+// On message from gallery webpage
 chrome.runtime.onMessageExternal.addListener(
 	function(request, sender, sendResponse) {
 		mUser = {loggedIn: true, id: request.userId, username: request.username};
-		console.log(mUser);
-		sendResponse(mUser);
+		console.log("User " + request.username + " logged in");
+		sendResponse({success: true});
 });
 
 chrome.runtime.onMessage.addListener(
@@ -81,6 +93,7 @@ chrome.contextMenus.onClicked.addListener(function(info, tab) {
     }
 });
 
+/*
 chrome.tabs.onActivated.addListener(function(activeInfo) {
     chrome.tabs.sendMessage(activeInfo.tabId, "isInjected", function(response) {
         if(chrome.runtime.lastError) {
@@ -95,6 +108,7 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
         }
     }); 
 });
+*/
 
 chrome.commands.onCommand.addListener(function(command) {
     if (command == "secret-mode") {

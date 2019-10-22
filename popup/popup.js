@@ -108,11 +108,10 @@ mFileInput.onchange = function() {
     fileReader.readAsText(uploadedFile, "UTF-8");
 }
 
-function login() {
+function isLoggedIn() {
 	chrome.runtime.sendMessage("getUser", function(response) {
 		response = response || {};
-		document.getElementById("logIn").innerHTML = response.username;
-		console.log(response);
+		return response.loggedIn;
 	});
 }
 
