@@ -41,9 +41,8 @@ chrome.runtime.onMessage.addListener(
     }
 );
 
-function downloadImage() {
-	let url = "test";
-	let data = JSON.stringify({url: url});
+function downloadImage(url) {
+	let data = JSON.stringify({id: 1, url: url});
 	
 	console.log("Downloading ", data);
 	
@@ -61,10 +60,9 @@ function downloadImage() {
 chrome.contextMenus.onClicked.addListener(function(info, tab) {
     if (info.menuItemId == "saveImage") {
         var message = {action: "saveImage", secret: mSecretMode};
-		downloadImage();
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             chrome.tabs.sendMessage(tabs[0].id, message, function(response) {
-                // TODO: check if saved
+                downloadImage(response["image"]);
             });
         });
     }

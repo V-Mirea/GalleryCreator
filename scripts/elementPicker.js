@@ -26,7 +26,7 @@ chrome.runtime.onMessage.addListener(
 			saveImage(message.secret);
 
 			// TODO: Might need to send response
-			sendResponse({});
+			sendResponse({image: findImage(mContextMenuElement)});
 		}
 	}
 );
