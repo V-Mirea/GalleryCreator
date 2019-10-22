@@ -25,15 +25,6 @@ window.addEventListener('load', function () {
 		});
 });
 
-// On message from gallery webpage
-chrome.runtime.onMessageExternal.addListener(
-	function(request, sender, sendResponse) {
-		mUser = {loggedIn: true, id: request.userId, username: request.username};
-		console.log("User " + request.username + " logged in");
-		chrome.sendMessage({action: "userLoggedIn", user: mUser});
-		sendResponse({success: true});
-});
-
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.action == "openPage") {
@@ -59,11 +50,15 @@ chrome.runtime.onMessage.addListener(
         } else if (request.action == "loadImages") {
             loadImages(request.images);
         } else if (request == "getUser") {
-			console.log("returning user");
+			console.log(mUser);
             sendResponse(mUser);
         } else if (request == "logOut") {
 			logOut();
 			sendResponse({success: true});
+		} else if (request.action == "loggedIn") {
+			mUser = {loggedIn: true, id: request.user.userId, username: request.user.username};
+			console.log("User " + request.username + " logged in");
+			chrome.sendMessage({action: "userLoggedIn", user: mUser});
 		}
     }
 );

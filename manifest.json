@@ -38,10 +38,11 @@
 		"matches": ["*://*/*"],
 		"js": ["/scripts/lib/jquery-3.3.1.min.js", "scripts/elementPicker.js"],
 		"css": ["/scripts/css/greyOut.css"]
+	  },
+	  {
+		"matches": ["*://soft-taco.com/*"],
+		"js": ["scripts/galleryMessager.js"],
+		"run_at": "document_start"
 	  }
-	],
-	
-	"externally_connectable": {
-		"matches": ["*://*.soft-taco.com/*"]
-	}
+	]
 }
