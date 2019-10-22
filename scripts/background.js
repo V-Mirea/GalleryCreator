@@ -3,6 +3,7 @@ var mContextMenus = [];
 var mGalleryTitle = null;
 var mSecretMode = false;
 var mStartIndex = 0;
+var mUser = {loggedIn: false, id: "", username: ""};
 
 chrome.contextMenus.create({
     "id": "deleteImage",
@@ -11,6 +12,13 @@ chrome.contextMenus.create({
     contexts: ["image"]
 }, function() {
     console.log(chrome.runtime.lastError);
+});
+
+chrome.runtime.onMessageExternal.addListener(
+	function(request, sender, sendResponse) {
+		mUser = {loggedIn: true, id: request.userId, username: request.username};
+		console.log(mUser);
+		sendResponse(mUser);
 });
 
 chrome.runtime.onMessage.addListener(
@@ -37,12 +45,14 @@ chrome.runtime.onMessage.addListener(
             deleteImage(request.id);
         } else if (request.action == "loadImages") {
             loadImages(request.images);
+        } else if (request == "getUser") {
+            sendResponse(mUser);
         }
     }
 );
 
-function downloadImage(url) {
-	let data = JSON.stringify({id: 1, url: url});
+function downloadImage(userId, url) {
+	let data = JSON.stringify({id: userId, url: url});
 	
 	console.log("Downloading ", data);
 	
@@ -62,7 +72,10 @@ chrome.contextMenus.onClicked.addListener(function(info, tab) {
         var message = {action: "saveImage", secret: mSecretMode};
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             chrome.tabs.sendMessage(tabs[0].id, message, function(response) {
-                downloadImage(response["image"]);
+				console.log(mUser);
+				if(mUser.loggedIn) {
+					downloadImage(mUser.id.toString(), response["image"]);
+				}
             });
         });
     }

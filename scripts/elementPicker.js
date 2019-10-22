@@ -27,6 +27,9 @@ chrome.runtime.onMessage.addListener(
 
 			// TODO: Might need to send response
 			sendResponse({image: findImage(mContextMenuElement)});
+		} else if (message == "login") {
+			alert("id: " + user);
+			sendResponse(user);
 		}
 	}
 );
@@ -132,7 +135,7 @@ function saveImage(secret) {
 				if(chrome.runtime.lastError) {
 					alert(chrome.runtime.lastError);
 				} else {
-					//alert("Image saved: " + imageUrl);
+					alert("Image saved: " + imageUrl);
 				}
 			});
 		});

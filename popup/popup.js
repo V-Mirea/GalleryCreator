@@ -6,6 +6,24 @@ var mViewButton = document.getElementById("viewGallery");
 var mExportButton = document.getElementById("exportImages");
 var mLoadButton = document.getElementById("loadImages");
 var mFileInput = document.getElementById("file-input");
+var mLoginButton = document.getElementById("logIn");
+
+document.onload = function() {
+	
+}
+
+mLoginButton.onclick = function() {
+	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+		chrome.tabs.sendMessage(tabs[0].id, "isInjected", function(response) {
+			response = response || {};
+			if (!response.injected) {
+				injectScripts(login);
+			} else {
+				login();
+			}
+		});
+	});
+}
 
 mGalleryButton.onclick = function() {
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -90,6 +108,14 @@ mFileInput.onchange = function() {
     fileReader.readAsText(uploadedFile, "UTF-8");
 }
 
+function login() {
+	chrome.runtime.sendMessage("getUser", function(response) {
+		response = response || {};
+		document.getElementById("logIn").innerHTML = response.username;
+		console.log(response);
+	});
+}
+
 function toggleElementPicker() {
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 		chrome.tabs.sendMessage(tabs[0].id, "toggleElementPicker", function(response) {
@@ -105,6 +131,7 @@ function toggleElementPicker() {
 
 function injectScripts(callback) {
 	var errors = [];
+	console.log("injecting");
 	chrome.tabs.insertCSS(null, {file: '/scripts/css/greyOut.css'}, function() {
 		if(chrome.runtime.lastError) errors.push(chrome.runtime.lastError.message);
 		chrome.tabs.executeScript(null, {file: '/scripts/lib/jquery-3.3.1.min.js'}, function() {

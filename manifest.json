@@ -32,5 +32,9 @@
 			},
 			"description": "Toggle secret mode"
 		}
+	},
+	
+	"externally_connectable": {
+		"matches": ["*://*.soft-taco.com/*"]
 	}
 }
