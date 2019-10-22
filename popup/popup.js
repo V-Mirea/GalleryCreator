@@ -6,22 +6,52 @@ var mViewButton = document.getElementById("viewGallery");
 var mExportButton = document.getElementById("exportImages");
 var mLoadButton = document.getElementById("loadImages");
 var mFileInput = document.getElementById("file-input");
-var mLoginButton = document.getElementById("logIn");
+var mAccountButton = document.getElementById("logIn");
 
-document.onload = function() {
-	
+document.addEventListener("DOMContentLoaded", onLoad);
+
+function onLoad() {
+	var user = getLoggedInUser(function(user) {
+		if (user.loggedIn) {
+			document.getElementById("logIn").innerHTML = user.username;
+		}
+	});
 }
 
-mLoginButton.onclick = function() {
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.action == "userLoggedIn") {
+			document.getElementById("logIn").innerHTML = request.user.username;
+		}
+	});
+	
+mAccountButton.onclick = function() {
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 		chrome.tabs.sendMessage(tabs[0].id, "isInjected", function(response) {
 			response = response || {};
-			if (!response.injected) {
-				injectScripts(login);
+			if (chrome.runtime.lastError ||!response.injected) {
+				injectScripts(onAccountButtonClicked);
 			} else {
-				login();
+				onAccountButtonClicked();
 			}
 		});
+	});
+}
+
+function onAccountButtonClicked() {
+	getLoggedInUser(function(user) {
+		if (user.loggedIn) {
+			chrome.runtime.sendMessage("logOut", function(response) {
+				if (response.success) {
+					document.getElementById("logIn").innerHTML = "Log in";
+				}
+			});	
+		} else {
+			chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+				chrome.tabs.sendMessage(tabs[0].id, "login");
+				
+			});
+		}
 	});
 }
 
@@ -29,7 +59,7 @@ mGalleryButton.onclick = function() {
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 		chrome.tabs.sendMessage(tabs[0].id, "isInjected", function(response) {
 			response = response || {};
-			if (!response.injected) {
+			if (chrome.runtime.lastError || !response.injected) {
 				injectScripts(toggleElementPicker);
 			} else {
 				toggleElementPicker();
@@ -108,10 +138,10 @@ mFileInput.onchange = function() {
     fileReader.readAsText(uploadedFile, "UTF-8");
 }
 
-function isLoggedIn() {
+function getLoggedInUser(callback) {
 	chrome.runtime.sendMessage("getUser", function(response) {
 		response = response || {};
-		return response.loggedIn;
+		callback(response);
 	});
 }
 
@@ -136,13 +166,13 @@ function injectScripts(callback) {
 		chrome.tabs.executeScript(null, {file: '/scripts/lib/jquery-3.3.1.min.js'}, function() {
 			if(chrome.runtime.lastError) errors.push(chrome.runtime.lastError.message);
 			chrome.tabs.executeScript(null, {file: '/scripts/elementPicker.js'}, function() {
-				if(chrome.runtime.lastError) errors.push(chrome.runtime.lastError.message);		
+				if(chrome.runtime.lastError) errors.push(chrome.runtime.lastError.message);
+				
 				errors = errors.filter(function(item, index){ // Remove duplicate errors
 					return errors.indexOf(item) >= index;
 				});
-
-				for(let i = 0; i < errors.length; i++) { // Display all errors
-					console.log(errors[i]); // TODO: Make this appear more centered
+				for (error in errors) { // Display all errors
+					console.log(error); // TODO: Make this appear more centered
 				}
 
 				callback();

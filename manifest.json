@@ -33,6 +33,13 @@
 			"description": "Toggle secret mode"
 		}
 	},
+	"content_scripts": [
+	  {
+		"matches": ["*://*/*"],
+		"js": ["/scripts/lib/jquery-3.3.1.min.js", "scripts/elementPicker.js"],
+		"css": ["/scripts/css/greyOut.css"]
+	  }
+	],
 	
 	"externally_connectable": {
 		"matches": ["*://*.soft-taco.com/*"]

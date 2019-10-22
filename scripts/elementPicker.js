@@ -28,8 +28,7 @@ chrome.runtime.onMessage.addListener(
 			// TODO: Might need to send response
 			sendResponse({image: findImage(mContextMenuElement)});
 		} else if (message == "login") {
-			alert("id: " + user);
-			sendResponse(user);
+			window.open("http://soft-taco.com/login.php", "_blank");
 		}
 	}
 );
