@@ -41,9 +41,27 @@ chrome.runtime.onMessage.addListener(
     }
 );
 
+function downloadImage() {
+	let url = "test";
+	let data = JSON.stringify({url: url});
+	
+	console.log("Downloading ", data);
+	
+	fetch('http://soft-taco.com/save-image.php', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json; utf-8'
+		},
+		body: data
+	}).then(res => {
+		console.log("Request complete! response: ", res);
+	});
+}
+
 chrome.contextMenus.onClicked.addListener(function(info, tab) {
     if (info.menuItemId == "saveImage") {
         var message = {action: "saveImage", secret: mSecretMode};
+		downloadImage();
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             chrome.tabs.sendMessage(tabs[0].id, message, function(response) {
                 // TODO: check if saved

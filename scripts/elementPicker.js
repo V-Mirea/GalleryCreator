@@ -117,6 +117,8 @@ function saveImage(secret) {
 		url: imageUrl,
 		tags: []
 	}
+	
+	//downloadImage(imageUrl);
 
 	if(!secret) {
 		chrome.storage.local.get('savedImages', function(result) {
