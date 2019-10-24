@@ -58,7 +58,7 @@ chrome.runtime.onMessage.addListener(
 		} else if (request.action == "loggedIn") {
 			mUser = {loggedIn: true, id: request.user.userId, username: request.user.username};
 			console.log("User " + request.username + " logged in");
-			chrome.sendMessage({action: "userLoggedIn", user: mUser});
+			chrome.runtime.sendMessage({action: "userLoggedIn", user: mUser}); // Todo: figure out why this throws an error
 		}
     }
 );
@@ -77,18 +77,18 @@ function logOut() {
 }
 
 function downloadImage(userId, url) {
-	let data = JSON.stringify({id: userId, url: url});
+	let data = JSON.stringify({action: "save-image", user_id: userId, url: url});
 	
 	console.log("Downloading ", data);
 	
 	fetch('http://soft-taco.com/save-image.php', {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json; utf-8'
-		},
+		//headers: {
+			//'Content-Type': 'application/json; utf-8'
+		//},
 		body: data
 	}).then(res => {
-		console.log("Request complete! response: ", res);
+		alert(res.status); //Todo: tell content script to do this
 	});
 }
 
@@ -97,7 +97,6 @@ chrome.contextMenus.onClicked.addListener(function(info, tab) {
         var message = {action: "saveImage", secret: mSecretMode};
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             chrome.tabs.sendMessage(tabs[0].id, message, function(response) {
-				console.log(mUser);
 				if(mUser.loggedIn) {
 					downloadImage(mUser.id.toString(), response["image"]);
 				}
