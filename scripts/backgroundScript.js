@@ -5,7 +5,7 @@ var mSecretMode = false;
 var mStartIndex = 0;
 var mUser = {loggedIn: false, id: "", username: ""};
 
-window.addEventListener('load', function () {
+ chrome.runtime.onInstalled.addListener(function () {
 		chrome.contextMenus.create({
 		id: "deleteImage",
 		title: "Delete image",

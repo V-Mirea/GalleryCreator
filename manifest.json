@@ -5,7 +5,7 @@
 	"manifest_version": 2,
 	
 	"background": {
-      "scripts": ["scripts/background.js"],
+      "scripts": ["scripts/backgroundScript.js"],
       "persistent": false
     },
 	
@@ -36,12 +36,12 @@
 	"content_scripts": [
 	  {
 		"matches": ["*://*/*"],
-		"js": ["/scripts/lib/jquery-3.3.1.min.js", "scripts/elementPicker.js"],
+		"js": ["/scripts/lib/jquery-3.3.1.min.js", "scripts/contentScript.js"],
 		"css": ["/scripts/css/greyOut.css"]
 	  },
 	  {
 		"matches": ["*://soft-taco.com/*"],
-		"js": ["scripts/galleryMessager.js"],
+		"js": ["scripts/serverScript.js"],
 		"run_at": "document_start"
 	  }
 	]
