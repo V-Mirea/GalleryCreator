@@ -12,6 +12,13 @@ var mAccountButton = document.getElementById("logIn");
 
 /* #region  UI click listeners */
 mAccountButton.addEventListener('click', function () {
+	isInjected()
+	.then((response) => {
+		console.log("Reponse back: " + response);
+	}).catch((error) => {
+		console.log(error);
+	});
+	/*
 	getLoggedInUser(function (user) {
 		if (user.loggedIn) {
 			chrome.runtime.sendMessage("logOut", function (response) {
@@ -26,6 +33,7 @@ mAccountButton.addEventListener('click', function () {
 			});
 		}
 	});
+	*/
 });
 
 mGalleryButton.addEventListener('click', function () {
@@ -129,14 +137,24 @@ chrome.runtime.onMessage.addListener(
 	});
 /* #endregion */
 
-function isInjected() {
+function messageContentScript(message, callback) {
 	chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-		chrome.tabs.sendMessage(tabs[0].id, "isInjected", function (response) {
+		chrome.tabs.sendMessage(tabs[0].id, message, function (response) {
+			callback(response);
+		});
+	});
+}
+
+function isInjected() {
+	return new Promise((resolve, reject) => {
+		messageContentScript("isInjected", function (response) {
 			response = response || {};
-			if (chrome.runtime.lastError || !response.injected) {
-				injectScripts(onAccountButtonClicked);
+			if (chrome.runtime.lastError) {
+				reject(chrome.runtime.lastError);
+			} else if (!response.injected) {
+				resolve(false);
 			} else {
-				onAccountButtonClicked();
+				resolve(true);
 			}
 		});
 	});
@@ -150,15 +168,13 @@ function getLoggedInUser(callback) {
 }
 
 function toggleElementPicker() {
-	chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-		chrome.tabs.sendMessage(tabs[0].id, "toggleElementPicker", function (response) {
-			response = response || {};
-			if (response.toggled) {
-				const MESSAGES = ["Create a gallery", "Cancel gallery"];
-				var text = document.getElementById("pickElement").innerHTML;
-				document.getElementById("pickElement").innerHTML = (text == MESSAGES[0]) ? MESSAGES[1] : MESSAGES[0];
-			}
-		});
+	messageContentScript("toggleElementPicker", function (response) {
+		response = response || {};
+		if (response.toggled) {
+			const MESSAGES = ["Create a gallery", "Cancel gallery"];
+			var text = document.getElementById("pickElement").innerHTML;
+			document.getElementById("pickElement").innerHTML = (text == MESSAGES[0]) ? MESSAGES[1] : MESSAGES[0];
+		}
 	});
 }
 

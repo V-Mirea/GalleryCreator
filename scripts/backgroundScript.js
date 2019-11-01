@@ -9,7 +9,10 @@ var mUser = {loggedIn: false, id: "", username: ""};
 		chrome.contextMenus.create({
 		id: "deleteImage",
 		title: "Delete image",
-		documentUrlPatterns: ["moz-extension://*/gallery/gallery.html"],
+		documentUrlPatterns: [
+			"*://*.soft-taco.com/gallery/index.php",
+			"http://192.168.0.152/gallery/index.php"
+		],
 		contexts: ["image"]
 	}, function() {
 		console.log(chrome.runtime.lastError);
@@ -92,6 +95,25 @@ function downloadImage(userId, url) {
 	});
 }
 
+function deleteImage() {
+	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, "getImageId", function(response) {
+				console.log(response.id);
+				var imageId = response.id;
+				
+				console.log("Deleting image id ", imageId);
+	
+				let data = JSON.stringify({action: "delete-image", image_id: imageId});
+				fetch('http://soft-taco.com/save-image.php', {
+					method: 'POST',
+					body: data
+				}).then(res => {
+					alert(res.status); //Todo: tell content script to do this
+				});
+			});
+	});
+}
+
 chrome.contextMenus.onClicked.addListener(function(info, tab) {
     if (info.menuItemId == "saveImage") {
         var message = {action: "saveImage", secret: mSecretMode};
@@ -102,6 +124,8 @@ chrome.contextMenus.onClicked.addListener(function(info, tab) {
 				}
             });
         });
+    } else if (info.menuItemId == "deleteImage") {
+        deleteImage();
     }
 });
 
@@ -159,6 +183,7 @@ function loadImages(images) {
     });
 }
 
+/*
 function deleteImage(id) {
     if (mSecretMode) {
         var saveMode = "secretImages";
@@ -183,3 +208,4 @@ function deleteImage(id) {
         chrome.storage.local.set({[saveMode]: images});
     });
 }
+*/
