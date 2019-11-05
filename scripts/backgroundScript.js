@@ -53,7 +53,7 @@ chrome.runtime.onInstalled.addListener(function () {
         id: "deleteImage",
         title: "Delete image",
         documentUrlPatterns: [
-            "*://*.soft-taco.com/gallery/index.php",
+            "*://*.soft-taco.com/gallery/*",
             "http://192.168.0.152/gallery/index.php"
         ],
         contexts: ["image"]
@@ -91,6 +91,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
         });
     } else if (info.menuItemId == "deleteImage") {
         deleteImage();
+        console.log("Delelting image");
     }
 });
 /* #endregion */
@@ -123,20 +124,23 @@ function downloadImage(userId, url) {
 }
 
 function deleteImage() {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, "getImageId", function (response) {
-            console.log(response.id);
-            var imageId = response.id;
+    messageContentScript("getImageId", function (response) {
+        console.log(response.id);
+        var imageId = response.id;
 
-            console.log("Deleting image id ", imageId);
+        console.log("Deleting image id ", imageId);
 
-            let data = JSON.stringify({ action: "delete-image", image_id: imageId });
-            fetch('http://soft-taco.com/save-image.php', {
-                method: 'POST',
-                body: data
-            }).then(res => {
-                alert(res.status); //Todo: tell content script to do this
-            });
+        let data = JSON.stringify({ action: "delete-image", image_id: imageId });
+        fetch('http://soft-taco.com/save-image.php', {
+            method: 'POST',
+            body: data
+        }).then(res => {
+            if(res.status == 200) {
+                alert("Image deleted successfully");
+            } else {
+                alert("Error! Status code: " + res.statsus);
+            }
+            //Todo: tell content script to do this
         });
     });
 }
