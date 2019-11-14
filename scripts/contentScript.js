@@ -23,7 +23,8 @@ chrome.runtime.onMessage.addListener(
 		} else if (message == "isInjected") {
 			sendResponse({injected: true});
 		} else if (message.action == "saveImage") {
-			saveImage(message.secret);
+			//saveImage(message.secret);
+			//Todo: implement toggle to save image online or offline
 
 			// TODO: Might need to send response
 			sendResponse({image: findImage(mContextMenuElement)});

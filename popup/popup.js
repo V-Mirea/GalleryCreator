@@ -14,26 +14,39 @@ var mAccountButton = document.getElementById("logIn");
 mAccountButton.addEventListener('click', function () {
 	isInjected()
 	.then((response) => {
-		console.log("Reponse back: " + response);
+		getLoggedInUser(function (user) {
+			if (user.loggedIn) {
+				chrome.runtime.sendMessage("logOut", function (response) {
+					if (response.success) {
+						document.getElementById("logIn").innerHTML = "Log in";
+					}
+				});
+			} else {
+				chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+					chrome.tabs.sendMessage(tabs[0].id, "login");
+				});
+			}
+		});
 	}).catch((error) => {
+		console.log("Login error: ");
 		console.log(error);
-	});
-	/*
-	getLoggedInUser(function (user) {
-		if (user.loggedIn) {
-			chrome.runtime.sendMessage("logOut", function (response) {
-				if (response.success) {
-					document.getElementById("logIn").innerHTML = "Log in";
+		alert("Login alert: " + error.message);
+		injectScripts(function() {
+			getLoggedInUser(function (user) {
+				if (user.loggedIn) {
+					chrome.runtime.sendMessage("logOut", function (response) {
+						if (response.success) {
+							document.getElementById("logIn").innerHTML = "Log in";
+						}
+					});
+				} else {
+					chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+						chrome.tabs.sendMessage(tabs[0].id, "login");
+					});
 				}
 			});
-		} else {
-			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-				chrome.tabs.sendMessage(tabs[0].id, "login");
-
-			});
-		}
+		});
 	});
-	*/
 });
 
 mGalleryButton.addEventListener('click', function () {

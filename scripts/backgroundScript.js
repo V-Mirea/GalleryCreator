@@ -33,7 +33,6 @@ chrome.runtime.onMessage.addListener(
         } else if (request.action == "loadImages") {
             loadImages(request.images);
         } else if (request == "getUser") {
-            console.log(mUser);
             sendResponse(mUser);
         } else if (request == "logOut") {
             logOut();
@@ -119,7 +118,12 @@ function downloadImage(userId, url) {
         method: 'POST',
         body: data
     }).then(res => {
-        alert(res.status); //Todo: tell content script to do this
+        console.log(res);
+        if(res.status == 200) {
+            alert("Image saved successfully");
+        } else {
+            alert("Error! Status code: " + res.statsus);
+        } //Todo: tell content script to do this
     });
 }
 
