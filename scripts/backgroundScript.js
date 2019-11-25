@@ -5,6 +5,7 @@ var mGalleryTitle = null;
 var mSecretMode = false;
 var mStartIndex = 0;
 var mUser = { loggedIn: false, id: "", username: "" };
+
 /* #endregion */
 
 /* #region  Message handlers */
@@ -39,7 +40,7 @@ chrome.runtime.onMessage.addListener(
             sendResponse({ success: true });
         } else if (request.action == "loggedIn") {
             mUser = { loggedIn: true, id: request.user.userId, username: request.user.username };
-            console.log("User " + request.username + " logged in");
+            console.log("User " + mUser.username + " logged in");
             chrome.runtime.sendMessage({ action: "userLoggedIn", user: mUser }); // Todo: figure out why this throws an error
         }
     }
