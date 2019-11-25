@@ -5,7 +5,6 @@ var mGalleryTitle = null;
 var mSecretMode = false;
 var mStartIndex = 0;
 var mUser = { loggedIn: false, id: "", username: "" };
-
 /* #endregion */
 
 /* #region  Message handlers */
@@ -91,6 +90,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
                         downloadImage(mUser.id.toString(), response["image"]);
                     }
                 } else {
+                    console.log(mUser);
                     alert("You must sign in first");
                     chrome.tabs.create({url: "http://soft-taco.com/login.php"});
                 }
