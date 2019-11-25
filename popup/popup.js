@@ -1,13 +1,15 @@
 'use strict';
 
 /* #region  UI elements */
+var mAccountButton = document.getElementById("logIn");
+var mViewButton = document.getElementById("viewGallery");
+/*
 var mGalleryButton = document.getElementById("pickElement");
 var mSaveButton = document.getElementById("saveImages");
-var mViewButton = document.getElementById("viewGallery");
 var mExportButton = document.getElementById("exportImages");
 var mLoadButton = document.getElementById("loadImages");
 var mFileInput = document.getElementById("file-input");
-var mAccountButton = document.getElementById("logIn");
+*/
 /* #endregion */
 
 /* #region  UI click listeners */
@@ -18,37 +20,44 @@ mAccountButton.addEventListener('click', function () {
 			if (user.loggedIn) {
 				chrome.runtime.sendMessage("logOut", function (response) {
 					if (response.success) {
+						alert("You are now logged out");
 						document.getElementById("logIn").innerHTML = "Log in";
 					}
 				});
 			} else {
-				chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-					chrome.tabs.sendMessage(tabs[0].id, "login");
-				});
+				chrome.tabs.create({url: "http://soft-taco.com/login.php"});
 			}
 		});
 	}).catch((error) => {
-		console.log("Login error: ");
-		console.log(error);
-		alert("Login alert: " + error.message);
-		injectScripts(function() {
-			getLoggedInUser(function (user) {
-				if (user.loggedIn) {
-					chrome.runtime.sendMessage("logOut", function (response) {
-						if (response.success) {
-							document.getElementById("logIn").innerHTML = "Log in";
-						}
-					});
-				} else {
-					chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-						chrome.tabs.sendMessage(tabs[0].id, "login");
-					});
-				}
-			});
-		});
+		document.getElementById("logIn").innerHTML = "Log in";
+		chrome.tabs.create({url: "http://soft-taco.com/login.php"});
 	});
 });
 
+mViewButton.addEventListener('click', function () {
+	chrome.tabs.create({url: "http://soft-taco.com/gallery"});
+	/*
+	chrome.runtime.sendMessage("getSecretMode", function (secret) {
+		if (secret) {
+			chrome.storage.local.get('secretImages', function (result) {
+				var images = result.secretImages || [];
+				var message = { action: "openPage", page: chrome.extension.getURL("gallery/gallery.html"), images: images, title: "Secret Images" };
+
+				chrome.runtime.sendMessage(message);
+			});
+		} else {
+			chrome.storage.local.get('savedImages', function (result) {
+				var images = result.savedImages || [];
+				var message = { action: "openPage", page: chrome.extension.getURL("gallery/gallery.html"), images: images, title: "Saved Images" };
+
+				chrome.runtime.sendMessage(message);
+			});
+		}
+	});
+	*/
+});
+
+/*
 mGalleryButton.addEventListener('click', function () {
 	chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 		chrome.tabs.sendMessage(tabs[0].id, "isInjected", function (response) {
@@ -77,25 +86,7 @@ mSaveButton.addEventListener('click', function (event) {
 	});
 });
 
-mViewButton.addEventListener('click', function () {
-	chrome.runtime.sendMessage("getSecretMode", function (secret) {
-		if (secret) {
-			chrome.storage.local.get('secretImages', function (result) {
-				var images = result.secretImages || [];
-				var message = { action: "openPage", page: chrome.extension.getURL("gallery/gallery.html"), images: images, title: "Secret Images" };
 
-				chrome.runtime.sendMessage(message);
-			});
-		} else {
-			chrome.storage.local.get('savedImages', function (result) {
-				var images = result.savedImages || [];
-				var message = { action: "openPage", page: chrome.extension.getURL("gallery/gallery.html"), images: images, title: "Saved Images" };
-
-				chrome.runtime.sendMessage(message);
-			});
-		}
-	});
-});
 
 mExportButton.addEventListener('click', function () {
 	var saveMode;
@@ -131,6 +122,7 @@ mFileInput.addEventListener('click', function () {
 	console.log("about to read");
 	fileReader.readAsText(uploadedFile, "UTF-8");
 });
+*/
 /* #endregion */
 
 /* #region  Other listeners */

@@ -32,8 +32,6 @@ chrome.runtime.onMessage.addListener(
 			var id = mContextMenuElement.attr('id');
 			console.log(id);
 			sendResponse({id: id});
-		}else if (message == "login") {
-			window.open("http://soft-taco.com/login.php", "_blank");
 		}
 	}
 );

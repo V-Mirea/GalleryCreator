@@ -84,7 +84,14 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
         chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
             chrome.tabs.sendMessage(tabs[0].id, message, function (response) {
                 if (mUser.loggedIn) {
-                    downloadImage(mUser.id.toString(), response["image"]);
+                    if(response == null) {
+                        alert("No response from script running on page. Refresh the webpage and try again.");
+                    } else {
+                        downloadImage(mUser.id.toString(), response["image"]);
+                    }
+                } else {
+                    alert("You must sign in first");
+                    chrome.tabs.create({url: "http://soft-taco.com/login.php"});
                 }
             });
         });
@@ -119,10 +126,17 @@ function downloadImage(userId, url) {
         body: data
     }).then(res => {
         console.log(res);
-        if(res.status == 200) {
+        if(res.ok) {
             alert("Image saved successfully");
         } else {
-            alert("Error! Status code: " + res.statsus);
+            res.text()
+			.then(body => {
+				if(!body || body.length === 0) {
+					alert("Unknown error saving picture");
+				} else {
+					alert(body);
+				}
+			});
         } //Todo: tell content script to do this
     });
 }
